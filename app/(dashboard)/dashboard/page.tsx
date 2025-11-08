@@ -1,48 +1,50 @@
 "use client";
 
+import { useMemo } from "react";
+import Link from "next/link";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { usePermissions } from "@/hooks/usePermissions";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { PermissionGate } from "@/components/auth/PermissionGate";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
+  AlertCircle,
+  BarChart3,
+  CalendarDays,
+  CheckCircle2,
+  DollarSign,
+  Eye,
+  FileText,
+  MapPin,
   Package,
   Truck,
-  Users,
-  Building2,
   TrendingUp,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  FileText,
-  BarChart3,
-  Shield,
-  MapPin,
-  DollarSign,
-  Activity,
   Warehouse,
-  ClipboardList,
-  UserCheck,
-  Receipt,
-  Settings,
-  Eye,
   Plus,
-  Edit,
-  Trash2,
+  Search as SearchIcon,
+  Receipt,
+  Users,
   Download,
-  Search,
 } from "lucide-react";
-import Link from "next/link";
-import { PermissionGate } from "@/components/auth/PermissionGate";
+
+// New dashboard widgets (create under src/components/dashboard/*)
+import { StatsCard } from "@/components/dashboard/StatsCard";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
+import { SystemAlertsPanel } from "@/components/dashboard/SystemAlertsPanel";
+import { LiveTrackingMap } from "@/components/dashboard/LiveTrackingMap";
+import { QuickActionsPanel } from "@/components/dashboard/QuickActionsPanel";
 
 export default function DashboardPage() {
   const { session } = useAuth();
-  const { can, allowedActions, hasAnyPermission } = usePermissions();
+  const { can } = usePermissions();
 
-  // Role-specific metrics
+  // === ORIGINAL LOGIC (unchanged) ===
   const getRoleMetrics = () => {
     const role = session?.user.role;
-
     if (role === "super_admin") {
       return {
         totalOrders: 1247,
@@ -55,7 +57,7 @@ export default function DashboardPage() {
         totalPartners: 5,
         revenue: 2450000,
         gstPending: 8,
-      };
+      } as const;
     } else if (role === "partner_admin") {
       return {
         totalOrders: 456,
@@ -67,7 +69,7 @@ export default function DashboardPage() {
         totalCustomers: 128,
         revenue: 890000,
         settlementPending: 2,
-      };
+      } as const;
     } else if (role === "branch_admin") {
       return {
         totalOrders: 89,
@@ -78,7 +80,7 @@ export default function DashboardPage() {
         totalCustomers: 45,
         drsPending: 3,
         todayDeliveries: 15,
-      };
+      } as const;
     } else if (role === "warehouse_admin") {
       return {
         totalInventory: 1245,
@@ -87,7 +89,7 @@ export default function DashboardPage() {
         manifestCreated: 23,
         stockAlerts: 3,
         reconciledToday: 45,
-      };
+      } as const;
     } else if (role === "dispatcher") {
       return {
         pendingAssignments: 15,
@@ -96,7 +98,7 @@ export default function DashboardPage() {
         activeRiders: 6,
         drsCreated: 5,
         unassignedOrders: 8,
-      };
+      } as const;
     } else if (role === "rider") {
       return {
         myTasks: 8,
@@ -105,760 +107,502 @@ export default function DashboardPage() {
         inTransit: 3,
         totalDeliveries: 234,
         rating: 4.8,
-      };
+      } as const;
     } else {
-      // customer
       return {
         myOrders: 12,
         pendingOrders: 3,
         inTransit: 2,
         delivered: 7,
         totalSpent: 12500,
-      };
+      } as const;
     }
   };
 
   const metrics = getRoleMetrics();
 
-  // Get role-specific content sections
-  const getRoleSections = () => {
-    const role = session?.user.role;
-    const sections: React.ReactNode[] = [];
-
-    // SUPER ADMIN SECTIONS
-    if (role === "super_admin") {
-      sections.push(
-        <Card key="partners" className="col-span-full">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Partner Overview</CardTitle>
-                <CardDescription>Multi-partner operations dashboard</CardDescription>
-              </div>
-              {can("view", "partner") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/partners">
-                    <Eye className="mr-2 h-4 w-4" />
-                    View All
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Partners</p>
-                  <p className="text-2xl font-bold">{(metrics as any).totalPartners || 0}</p>
-                </div>
-                <Users className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Active Branches</p>
-                  <p className="text-2xl font-bold">{metrics.totalBranches}</p>
-                </div>
-                <Building2 className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold">₹{((metrics.revenue || 0) / 100000).toFixed(1)}L</p>
-                </div>
-                <DollarSign className="h-8 w-8 text-primary" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      );
-
-      if (can("view", "gst")) {
-        sections.push(
-          <Card key="gst">
-            <CardHeader>
-              <CardTitle>GST Compliance</CardTitle>
-              <CardDescription>Tax filing and compliance status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Pending Filings</span>
-                  <Badge variant="destructive">{(metrics as any).gstPending || 0}</Badge>
-                </div>
-                {can("view", "gst") && (
-                  <Button asChild variant="outline" size="sm" className="w-full mt-4">
-                    <Link href="/dashboard/gst/reports">
-                      <FileText className="mr-2 h-4 w-4" />
-                      View GST Reports
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      }
-    }
-
-    // PARTNER ADMIN SECTIONS
-    if (role === "partner_admin") {
-      sections.push(
-        <Card key="branch-performance">
-          <CardHeader>
-            <CardTitle>Branch Performance</CardTitle>
-            <CardDescription>Your branch network overview</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Active Branches</span>
-                <span className="text-2xl font-bold">{metrics.totalBranches}</span>
-              </div>
-              {can("view", "branch") && (
-                <Button asChild variant="outline" size="sm" className="w-full">
-                  <Link href="/dashboard/branches/performance">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    View Performance
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-
-      if (can("view", "invoice")) {
-        sections.push(
-          <Card key="settlement">
-            <CardHeader>
-              <CardTitle>Settlement Status</CardTitle>
-              <CardDescription>Payment and settlement overview</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Pending Settlements</span>
-                  <Badge variant="secondary">{(metrics as any).settlementPending || 0}</Badge>
-                </div>
-                {can("view", "invoice") && (
-                  <Button asChild variant="outline" size="sm" className="w-full mt-4">
-                    <Link href="/dashboard/invoices">
-                      <Receipt className="mr-2 h-4 w-4" />
-                      View Invoices
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      }
-    }
-
-    // BRANCH ADMIN SECTIONS
-    if (role === "branch_admin") {
-      sections.push(
-        <Card key="drs-status">
-          <CardHeader>
-            <CardTitle>DRS Status</CardTitle>
-            <CardDescription>Delivery Run Sheet management</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Pending DRS</span>
-                <Badge variant="secondary">{(metrics as any).drsPending || 0}</Badge>
-              </div>
-              {can("create", "drs") && (
-                <Button asChild variant="default" size="sm" className="w-full">
-                  <Link href="/dashboard/drs/create">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create DRS
-                  </Link>
-                </Button>
-              )}
-              {can("view", "drs") && (
-                <Button asChild variant="outline" size="sm" className="w-full">
-                  <Link href="/dashboard/drs/active">
-                    <Eye className="mr-2 h-4 w-4" />
-                    View Active DRS
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-
-      if (can("view", "rider")) {
-        sections.push(
-          <Card key="rider-allocation">
-            <CardHeader>
-              <CardTitle>Rider Management</CardTitle>
-              <CardDescription>Allocate and manage riders</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Active Riders</span>
-                  <span className="text-2xl font-bold">{metrics.activeRiders}</span>
-                </div>
-                {can("allocate", "rider") && (
-                  <Button asChild variant="outline" size="sm" className="w-full mt-4">
-                    <Link href="/dashboard/riders/allocation">
-                      <UserCheck className="mr-2 h-4 w-4" />
-                      Allocate Riders
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      }
-    }
-
-    // WAREHOUSE ADMIN SECTIONS
-    if (role === "warehouse_admin") {
-      sections.push(
-        <Card key="inventory" className="col-span-full">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Inventory Overview</CardTitle>
-                <CardDescription>Warehouse stock and manifest status</CardDescription>
-              </div>
-              {can("view", "warehouse") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/warehouse/inventory">
-                    <Eye className="mr-2 h-4 w-4" />
-                    View Inventory
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Inventory</p>
-                  <p className="text-2xl font-bold">{(metrics as any).totalInventory || 0}</p>
-                </div>
-                <Warehouse className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Pending Inward</p>
-                  <p className="text-2xl font-bold">{(metrics as any).pendingInward || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-yellow-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Pending Outward</p>
-                  <p className="text-2xl font-bold">{(metrics as any).pendingOutward || 0}</p>
-                </div>
-                <Truck className="h-8 w-8 text-blue-500" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      );
-
-      if (can("create", "manifest")) {
-        sections.push(
-          <Card key="manifest-actions">
-            <CardHeader>
-              <CardTitle>Manifest Actions</CardTitle>
-              <CardDescription>Quick manifest operations</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {can("view", "manifest") && (
-                  <Button asChild variant="outline" size="sm" className="w-full">
-                    <Link href="/dashboard/manifest/counter/inward">
-                      <Package className="mr-2 h-4 w-4" />
-                      Counter Inward
-                    </Link>
-                  </Button>
-                )}
-                {can("create", "manifest") && (
-                  <Button asChild variant="default" size="sm" className="w-full">
-                    <Link href="/dashboard/manifest/forwarding/create">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Create Forwarding Manifest
-                    </Link>
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        );
-      }
-    }
-
-    // DISPATCHER SECTIONS
-    if (role === "dispatcher") {
-      sections.push(
-        <Card key="assignment-queue" className="col-span-full">
-          <CardHeader>
-            <CardTitle>Assignment Queue</CardTitle>
-            <CardDescription>Orders waiting for rider assignment</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Unassigned Orders</p>
-                  <p className="text-2xl font-bold">{(metrics as any).unassignedOrders || 0}</p>
-                </div>
-                <AlertCircle className="h-8 w-8 text-yellow-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Assigned Today</p>
-                  <p className="text-2xl font-bold">{(metrics as any).assignedToday || 0}</p>
-                </div>
-                <CheckCircle2 className="h-8 w-8 text-green-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Active Riders</p>
-                  <p className="text-2xl font-bold">{metrics.activeRiders}</p>
-                </div>
-                <Truck className="h-8 w-8 text-blue-500" />
-              </div>
-            </div>
-            <div className="mt-4 flex gap-2">
-              {can("view", "order") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/orders">
-                    <Search className="mr-2 h-4 w-4" />
-                    View Orders
-                  </Link>
-                </Button>
-              )}
-              {can("create", "drs") && (
-                <Button asChild variant="default" size="sm">
-                  <Link href="/dashboard/drs/create">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create DRS
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    // RIDER SECTIONS
-    if (role === "rider") {
-      sections.push(
-        <Card key="my-tasks" className="col-span-full">
-          <CardHeader>
-            <CardTitle>My Delivery Tasks</CardTitle>
-            <CardDescription>Your assigned deliveries for today</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">My Tasks</p>
-                  <p className="text-2xl font-bold">{metrics.myTasks}</p>
-                </div>
-                <ClipboardList className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Completed Today</p>
-                  <p className="text-2xl font-bold">{(metrics as any).completedToday || 0}</p>
-                </div>
-                <CheckCircle2 className="h-8 w-8 text-green-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">My Rating</p>
-                  <p className="text-2xl font-bold">{metrics.rating}</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-yellow-500" />
-              </div>
-            </div>
-            <div className="mt-4 flex gap-2">
-              {can("view", "pod") && (
-                <Button asChild variant="default" size="sm">
-                  <Link href="/dashboard/rider/tasks">
-                    <ClipboardList className="mr-2 h-4 w-4" />
-                    View My Tasks
-                  </Link>
-                </Button>
-              )}
-              {can("capture", "pod") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/rider/pod">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Capture POD
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    // CUSTOMER SECTIONS
-    if (role === "customer") {
-      sections.push(
-        <Card key="my-orders" className="col-span-full">
-          <CardHeader>
-            <CardTitle>My Orders</CardTitle>
-            <CardDescription>Track and manage your shipments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-4">
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Orders</p>
-                  <p className="text-2xl font-bold">{metrics.myOrders}</p>
-                </div>
-                <Package className="h-8 w-8 text-primary" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Pending</p>
-                  <p className="text-2xl font-bold">{metrics.pendingOrders}</p>
-                </div>
-                <Clock className="h-8 w-8 text-yellow-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">In Transit</p>
-                  <p className="text-2xl font-bold">{metrics.inTransit}</p>
-                </div>
-                <Truck className="h-8 w-8 text-blue-500" />
-              </div>
-              <div className="flex items-center justify-between rounded-lg border p-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Delivered</p>
-                  <p className="text-2xl font-bold">{metrics.delivered}</p>
-                </div>
-                <CheckCircle2 className="h-8 w-8 text-green-500" />
-              </div>
-            </div>
-            <div className="mt-4 flex gap-2">
-              {can("create", "booking") && (
-                <Button asChild variant="default" size="sm">
-                  <Link href="/dashboard/customer/booking">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Booking
-                  </Link>
-                </Button>
-              )}
-              {can("view", "order") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/customer/orders">
-                    <Eye className="mr-2 h-4 w-4" />
-                    View All Orders
-                  </Link>
-                </Button>
-              )}
-              {can("track", "tracking") && (
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/dashboard/tracking">
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Track Order
-                  </Link>
-                </Button>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
-
-    return sections;
-  };
-
-  // Get role-specific title and description
   const getRoleContent = () => {
     const role = session?.user.role;
-
     if (role === "super_admin") {
       return {
-        title: "Enterprise Command Center",
-        subtitle: "Delivery Management System",
-        description: "End-to-end logistics intelligence with GST compliance, multi-partner operations, and real-time tracking.",
-      };
+        badge: "Enterprise Command Center",
+        title: "Delivery Management System",
+        blurb:
+          "End-to-end logistics intelligence with GST compliance, multi-partner operations, and real-time tracking.",
+      } as const;
     } else if (role === "partner_admin") {
       return {
-        title: "Partner Dashboard",
-        subtitle: "Regional Operations",
-        description: "Manage your partner network, branches, and operations with comprehensive analytics.",
-      };
+        badge: "Partner Dashboard",
+        title: "Regional Operations",
+        blurb:
+          "Manage partner network, branches, and operations with analytics.",
+      } as const;
     } else if (role === "branch_admin") {
       return {
-        title: "Branch Operations",
-        subtitle: "Daily Operations Management",
-        description: "Manage branch orders, riders, DRS creation, and delivery operations.",
-      };
+        badge: "Branch Operations",
+        title: "Daily Operations Management",
+        blurb: "Manage branch orders, riders, DRS creation, and deliveries.",
+      } as const;
     } else if (role === "warehouse_admin") {
       return {
-        title: "Warehouse Operations",
-        subtitle: "Inventory & Manifest Management",
-        description: "Manage inventory, manifests, stock reconciliation, and warehouse operations.",
-      };
+        badge: "Warehouse Operations",
+        title: "Inventory & Manifest Management",
+        blurb:
+          "Manage inventory, manifests, stock reconciliation, and operations.",
+      } as const;
     } else if (role === "dispatcher") {
       return {
-        title: "Dispatcher Dashboard",
-        subtitle: "Order Assignment & Coordination",
-        description: "Assign orders to riders, create DRS, and coordinate deliveries efficiently.",
-      };
+        badge: "Dispatcher Dashboard",
+        title: "Order Assignment & Coordination",
+        blurb: "Assign orders, create DRS, and coordinate deliveries.",
+      } as const;
     } else if (role === "rider") {
       return {
-        title: "Rider Dashboard",
-        subtitle: "My Delivery Tasks",
-        description: "View and manage your assigned delivery tasks, capture POD, and track performance.",
-      };
+        badge: "Rider Dashboard",
+        title: "My Delivery Tasks",
+        blurb: "View tasks, capture POD, and track performance.",
+      } as const;
     } else {
       return {
-        title: "Customer Portal",
-        subtitle: "Shipment Management",
-        description: "Track your orders, create bookings, and manage shipments.",
-      };
+        badge: "Customer Portal",
+        title: "Shipment Management",
+        blurb: "Track orders, create bookings, and manage shipments.",
+      } as const;
     }
   };
 
   const roleContent = getRoleContent();
 
+  // ======= UI DATA (for StatsCard & Panels) matching MainDashboard =======
+  const stats = [
+    {
+      title: "Total Shipments",
+      value:
+        (metrics as any).totalOrders?.toLocaleString?.() ||
+        (metrics as any).myOrders?.toString?.() ||
+        "0",
+      changeLabel: "Today",
+      changeValue: "+8.4%",
+      trend: "up" as const,
+    },
+    {
+      title: "Active Riders",
+      value: String((metrics as any).activeRiders || 0),
+      changeLabel: "across cities",
+      changeValue: "+62",
+      trend: "up" as const,
+    },
+    {
+      title: "On-time Delivery %",
+      value: "96.2",
+      suffix: "%",
+      changeLabel: "SLA Performance",
+      changeValue: "-0.8%",
+      trend: "down" as const,
+    },
+    {
+      title: "GST Compliance",
+      value: "98.5",
+      suffix: "%",
+      changeLabel: "Filings Completed",
+      changeValue: "+2.1%",
+      trend: "up" as const,
+    },
+    {
+      title: "POD Capture Rate",
+      value: "94.7",
+      suffix: "%",
+      changeLabel: "Successful PODs",
+      changeValue: "+1.2%",
+      trend: "up" as const,
+    },
+    {
+      title: "Exception Rate",
+      value: "1.8",
+      suffix: "%",
+      changeLabel: "Requires Attention",
+      changeValue: "+0.2%",
+      trend: "down" as const,
+    },
+  ];
+
+  const activities = [
+    {
+      id: "1",
+      title: "Shipment DL-2391 Delivered with POD",
+      description:
+        "Bangalore Central Hub • Signature captured successfully • Rider #8421",
+      status: "success" as const,
+      timestamp: "2 mins ago",
+    },
+    {
+      id: "2",
+      title: "GST Invoice Generated",
+      description:
+        "Hyderabad South Facility • GSTR-1 filing completed • Compliance verified",
+      status: "info" as const,
+      timestamp: "12 mins ago",
+    },
+    {
+      id: "3",
+      title: "Address Validation Failed - Manual Review",
+      description:
+        "Shipment PN-8820 flagged • Customer confirmation pending • Exception workflow initiated",
+      status: "warning" as const,
+      timestamp: "22 mins ago",
+    },
+    {
+      id: "4",
+      title: "Partner Onboarding Completed",
+      description:
+        "LogiMax Partners • GSTIN verified • Training & infrastructure assessment passed",
+      status: "success" as const,
+      timestamp: "38 mins ago",
+    },
+    {
+      id: "5",
+      title: "DRS Created for Mumbai West",
+      description:
+        "Delivery Run Sheet generated • 42 shipments assigned • Rider allocation completed",
+      status: "info" as const,
+      timestamp: "45 mins ago",
+    },
+  ];
+
+  const alerts = [
+    {
+      id: "1",
+      title: "E-Way Bill Expiry - 12 Shipments",
+      description:
+        "Validity ending in 6 hours • Auto-extension required • Pune cluster affected",
+      severity: "high" as const,
+      timestamp: "5 mins ago",
+    },
+    {
+      id: "2",
+      title: "GSTR-3B Filing Deadline",
+      description:
+        "Maharashtra due in 2 days • Pending approval from finance • 48 branches impacted",
+      severity: "medium" as const,
+      timestamp: "18 mins ago",
+    },
+    {
+      id: "3",
+      title: "POD Capture Failure - Pune Cluster",
+      description:
+        "7 failed delivery attempts • Address verification workflow initiated • Rider support required",
+      severity: "critical" as const,
+      timestamp: "32 mins ago",
+    },
+    {
+      id: "4",
+      title: "Counter Manifest Inward Pending",
+      description:
+        "24 shipments awaiting processing • Bangalore Central Hub • Priority attention needed",
+      severity: "medium" as const,
+      timestamp: "1 hr ago",
+    },
+  ];
+
   return (
-    <div className="container py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">{roleContent.title}</h1>
-        <p className="text-muted-foreground">
-          {roleContent.subtitle} · {roleContent.description}
-        </p>
-        {session?.isImpersonating && (
-          <Badge variant="destructive" className="mt-2">
-            You are impersonating this user
-          </Badge>
-        )}
-      </div>
-
-      {/* Role-specific Metrics Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-        {/* Common metrics - shown based on permissions */}
-        <PermissionGate action="view" resource="order">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metrics.totalOrders || metrics.myOrders || 0}</div>
-              <p className="text-xs text-muted-foreground">+12% from last month</p>
-            </CardContent>
-          </Card>
-        </PermissionGate>
-
-        <PermissionGate action="view" resource="order">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">In Transit</CardTitle>
-              <Truck className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metrics.inTransit || 0}</div>
-              <p className="text-xs text-muted-foreground">Active deliveries</p>
-            </CardContent>
-          </Card>
-        </PermissionGate>
-
-        <PermissionGate action="view" resource="branch">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Branches</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metrics.totalBranches || 0}</div>
-              <p className="text-xs text-muted-foreground">Active branches</p>
-            </CardContent>
-          </Card>
-        </PermissionGate>
-
-        <PermissionGate action="view" resource="rider">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Riders</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metrics.activeRiders || 0}</div>
-              <p className="text-xs text-muted-foreground">On duty today</p>
-            </CardContent>
-          </Card>
-        </PermissionGate>
-
-        {/* Role-specific additional metrics */}
-        {session?.user.role === "warehouse_admin" && (
-          <>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Inventory</CardTitle>
-                <Warehouse className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(metrics as any).totalInventory || 0}</div>
-                <p className="text-xs text-muted-foreground">Items in stock</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Stock Alerts</CardTitle>
-                <AlertCircle className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(metrics as any).stockAlerts || 0}</div>
-                <p className="text-xs text-muted-foreground">Low stock items</p>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {session?.user.role === "rider" && (
-          <>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">My Tasks</CardTitle>
-                <ClipboardList className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(metrics as any).myTasks || 0}</div>
-                <p className="text-xs text-muted-foreground">Assigned today</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">My Rating</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(metrics as any).rating || 0}</div>
-                <p className="text-xs text-muted-foreground">Customer rating</p>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {session?.user.role === "customer" && (
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">₹{((metrics as any).totalSpent || 0).toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">All time</p>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Role-specific content sections */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {/* Order Status Card - shown if user can view orders */}
-        <PermissionGate action="view" resource="order">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Status</CardTitle>
-              <CardDescription>Current order distribution</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-yellow-500" />
-                    <span>Pending</span>
-                  </div>
-                  <span className="font-semibold">{metrics.pendingOrders || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Truck className="h-4 w-4 text-blue-500" />
-                    <span>In Transit</span>
-                  </div>
-                  <span className="font-semibold">{metrics.inTransit || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>Delivered</span>
-                  </div>
-                  <span className="font-semibold">{metrics.delivered || 0}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </PermissionGate>
-
-        {/* Quick Actions Card - permission-based */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Streamline daily operations</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-2">
-              {can("create", "booking") && (
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link href="/dashboard/booking/create">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Booking
-                  </Link>
-                </Button>
-              )}
-              {can("view", "order") && (
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link href="/dashboard/orders">
-                    <Eye className="mr-2 h-4 w-4" />
-                    View Orders
-                  </Link>
-                </Button>
-              )}
-              {can("view", "tracking") && (
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link href="/dashboard/tracking">
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Track Order
-                  </Link>
-                </Button>
-              )}
-              {can("view", "report") && (
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link href="/dashboard/reports">
-                    <BarChart3 className="mr-2 h-4 w-4" />
-                    View Reports
-                  </Link>
-                </Button>
-              )}
-              {can("view", "system_settings") && (
-                <Button asChild variant="outline" size="sm" className="w-full justify-start">
-                  <Link href="/dashboard/admin/settings">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
-                </Button>
-              )}
+    <div className="space-y-7">
+      {/* ======== Header Section (matches MainDashboard) ======== */}
+      <section className="rounded-3xl border border-border/70 bg-card/95 p-7 shadow-card">
+        <div className="flex flex-wrap items-start justify-between gap-5">
+          <div className="space-y-3">
+            <Badge className="rounded-full bg-primary/15 px-4 py-1 text-primary font-semibold">
+              {roleContent.badge}
+            </Badge>
+            <div className="space-y-2">
+              <h1 className="text-display-1 leading-tight font-bold">
+                {roleContent.title}
+              </h1>
+              <p className="max-w-2xl text-body text-muted-foreground">
+                {roleContent.blurb}
+              </p>
             </div>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-2 rounded-full bg-success/15 px-3 py-1 text-success">
+                <TrendingUp className="h-3.5 w-3.5" /> SLA Health: 96.2%
+              </span>
+              <span className="flex items-center gap-2 rounded-full bg-warning/15 px-3 py-1 text-warning">
+                <AlertCircle className="h-3.5 w-3.5" /> 3 critical alerts
+                pending
+              </span>
+              <span className="flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-primary">
+                <Truck className="h-3.5 w-3.5" />{" "}
+                {(metrics as any).activeRiders || 0} active riders
+              </span>
+            </div>
+          </div>
+          <div className="min-w-[280px] space-y-3 rounded-3xl border border-primary/30 bg-primary/5 p-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                  Operational Snapshot
+                </p>
+                <p className="text-lg font-bold text-foreground">Today</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 rounded-lg border-border/80"
+              >
+                <CalendarDays className="h-4 w-4" /> Range
+              </Button>
+            </div>
+            <div className="grid gap-3 text-sm">
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Shipments processed</span>
+                <span className="font-semibold text-foreground">+1,248</span>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>GST invoices generated</span>
+                <span className="font-semibold text-foreground">92%</span>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <span>Partners meeting SLA</span>
+                <span className="font-semibold text-foreground">44/48</span>
+              </div>
+            </div>
+            <Button className="w-full gap-2 rounded-lg bg-primary text-primary-foreground shadow-brand font-semibold">
+              <Download className="h-4 w-4" /> Export Compliance Report
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ======== Key Metrics Grid (StatsCard) ======== */}
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {stats.map((s) => (
+          <StatsCard key={s.title} {...s} />
+        ))}
+      </section>
+
+      {/* ======== Main Content Grid ======== */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-6">
+          {/* Live Tracking */}
+          <LiveTrackingMap />
+
+          {/* Performance + Service Mix */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Delivery Performance */}
+            <Card className="rounded-3xl border-border/70 bg-card/95 shadow-card">
+              <CardHeader className="flex flex-row items-center justify-between pb-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
+                    <BarChart3 className="h-4 w-4" /> Delivery Performance
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    SLA adherence & exception trends
+                  </p>
+                </div>
+                <Badge className="rounded-full bg-success text-success-foreground">
+                  96.2%
+                </Badge>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                <div className="relative h-40 rounded-2xl bg-gradient-to-br from-primary/20 via-background to-secondary/20 p-4">
+                  <div className="flex h-full w-full items-end gap-3">
+                    {[62, 70, 68, 75, 82, 90, 96].map((v) => (
+                      <div key={v} className="flex-1">
+                        <div
+                          className="rounded-t-2xl bg-primary transition-all hover:bg-primary/80"
+                          style={{ height: `${v}%` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="absolute inset-x-4 bottom-4 flex items-center justify-between text-[0.65rem] text-muted-foreground">
+                    {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                      (d) => (
+                        <span key={d}>{d}</span>
+                      )
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded-full bg-primary" /> On-time
+                    deliveries
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded-full bg-warning" /> POD
+                    pending
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-3 w-3 rounded-full bg-error" />{" "}
+                    Exceptions
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Service Mix */}
+            <Card className="rounded-3xl border-border/70 bg-card/95 shadow-card">
+              <CardHeader className="flex flex-row items-center justify-between pb-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-base font-semibold text-foreground">
+                    <Package className="h-4 w-4" /> Service Mix
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Today's shipment distribution
+                  </p>
+                </div>
+                <Badge className="rounded-full bg-primary/15 px-3 py-1 text-primary">
+                  Balanced
+                </Badge>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {[
+                  {
+                    label: "Same-day",
+                    value: 62,
+                    trend: "+5.2%",
+                    color: "bg-primary",
+                  },
+                  {
+                    label: "Next-day",
+                    value: 28,
+                    trend: "+2.1%",
+                    color: "bg-success",
+                  },
+                  {
+                    label: "Intercity",
+                    value: 10,
+                    trend: "-1.3%",
+                    color: "bg-warning",
+                  },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                      <span>{s.label}</span>
+                      <span className="flex items-center gap-2">
+                        <span className="font-semibold text-foreground">
+                          {s.value}%
+                        </span>
+                        <span
+                          className={
+                            s.trend.startsWith("+")
+                              ? "text-success"
+                              : "text-warning"
+                          }
+                        >
+                          {s.trend}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="h-2.5 overflow-hidden rounded-full bg-muted/40">
+                      <div
+                        className={`h-full rounded-full ${s.color}`}
+                        style={{ width: `${s.value}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-2xl bg-muted/40 p-4 text-xs text-muted-foreground">
+                  Delivery capacity optimal across metro hubs. Monitor Pune
+                  cluster for exceptions.
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Right Column: Activities & Alerts */}
+        <div className="space-y-6">
+          <ActivityFeed items={activities} />
+          <SystemAlertsPanel alerts={alerts} />
+        </div>
+      </div>
+
+      {/* ======== Operational Highlights + Quick Actions ======== */}
+      <section className="grid gap-6 lg:grid-cols-3">
+        <Card className="rounded-3xl border-border/70 bg-card/95 shadow-card lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-6">
+            <div>
+              <CardTitle className="text-base font-semibold text-foreground">
+                Operational Highlights
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                GST compliance, partner network, and service coverage
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 rounded-lg border-border/80"
+            >
+              <FileText className="h-4 w-4" /> Manage Programs
+            </Button>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            {[
+              {
+                icon: TrendingUp,
+                label: "GST Compliance",
+                sublabel: "12 filings completed",
+                trend: "+100%",
+                status: "success",
+              },
+              {
+                icon: Users,
+                label: "Partner Network",
+                sublabel: "48 active partners",
+                trend: "+4 new",
+                status: "info",
+              },
+              {
+                icon: MapPin,
+                label: "Service Coverage",
+                sublabel: "1,240 pincodes",
+                trend: "+32 expanded",
+                status: "success",
+              },
+              {
+                icon: FileText,
+                label: "POD Completion",
+                sublabel: "94.7% success rate",
+                trend: "+1.2%",
+                status: "success",
+              },
+            ].map((item) => {
+              const Icon = item.icon as any;
+              return (
+                <div
+                  key={item.label}
+                  className="flex items-center gap-4 rounded-2xl border border-border/60 bg-background/80 p-4 transition-colors hover:border-primary/30"
+                >
+                  <span
+                    className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+                      item.status === "success"
+                        ? "bg-success/10 text-success"
+                        : item.status === "warning"
+                        ? "bg-warning/10 text-warning"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    <Icon className="h-6 w-6" />
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      {item.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {item.sublabel}
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-primary">
+                      {item.trend}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
-
-        {/* Role-specific sections */}
-        {getRoleSections()}
-      </div>
+        <QuickActionsPanel />
+      </section>
     </div>
   );
 }
