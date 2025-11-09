@@ -52,7 +52,7 @@ export function HubPerformancePanel({
                     hub.status === "excellent"
                       ? "success"
                       : hub.status === "good"
-                      ? "primary"
+                      ? "secondary" // Changed from "primary" to "secondary"
                       : "warning"
                   }
                   className="rounded-full text-xs"

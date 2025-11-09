@@ -85,7 +85,16 @@ const partnerStats = [
   },
 ];
 
-const partnerScorecards = [
+const partnerScorecards: {
+  name: string;
+  location: string;
+  performance: number;
+  slaCompliance: number;
+  revenue: number;
+  growth: number;
+  status: "warning" | "excellent" | "good";
+  joined: string;
+}[] = [
   {
     name: "LogiMax Partners",
     location: "Mumbai, MH",
@@ -157,7 +166,12 @@ const performanceTrends = [
   { month: "Dec", performance: 8.8, sla: 95, revenue: 19.1 },
 ];
 
-const slaCompliance = [
+const slaCompliance: {
+  metric: string;
+  target: string | number;
+  actual: string | number;
+  status: "warning" | "exceeded" | "met";
+}[] = [
   { metric: "On-time Delivery", target: 95, actual: 96.2, status: "exceeded" },
   { metric: "Pickup Compliance", target: 98, actual: 97.8, status: "met" },
   { metric: "POD Capture Rate", target: 99, actual: 98.5, status: "met" },
@@ -171,7 +185,13 @@ const slaCompliance = [
   { metric: "Response Time", target: "4h", actual: "2.8h", status: "exceeded" },
 ];
 
-const revenueSharing = [
+const revenueSharing: {
+  partner: string;
+  revenue: number;
+  commission: number;
+  payout: string;
+  status: "pending" | "paid" | "processing";
+}[] = [
   {
     partner: "LogiMax Partners",
     revenue: 4.2,
@@ -209,7 +229,14 @@ const revenueSharing = [
   },
 ];
 
-const incentivePrograms = [
+const incentivePrograms: {
+  program: string;
+  description: string;
+  reward: string;
+  participants: number;
+  status: "active";
+  deadline: string;
+}[] = [
   {
     program: "Q4 Excellence Bonus",
     description: "Top 5 partners by performance score",

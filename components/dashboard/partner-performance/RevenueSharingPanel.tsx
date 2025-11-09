@@ -59,7 +59,7 @@ export function RevenueSharingPanel({
                     ? "success"
                     : partner.status === "pending"
                     ? "warning"
-                    : "primary"
+                    : "secondary" // Changed from "primary" to "secondary"
                 }
                 className="rounded-full text-xs"
               >
