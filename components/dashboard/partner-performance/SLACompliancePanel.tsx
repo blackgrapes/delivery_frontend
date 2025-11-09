@@ -47,7 +47,7 @@ export function SLACompliancePanel({
                   metric.status === "exceeded"
                     ? "success"
                     : metric.status === "met"
-                    ? "primary"
+                    ? "secondary" // Changed from "primary" to "secondary"
                     : "warning"
                 }
                 className="rounded-full text-xs"

@@ -58,7 +58,7 @@ export function RiderEfficiencyPanel({
                   rider.status === "excellent"
                     ? "success"
                     : rider.status === "good"
-                    ? "primary"
+                    ? "secondary" // Changed from "primary" to "secondary"
                     : "warning"
                 }
                 className="rounded-full text-xs"

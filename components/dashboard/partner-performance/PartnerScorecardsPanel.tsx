@@ -57,7 +57,7 @@ export function PartnerScorecardsPanel({
                       partner.status === "excellent"
                         ? "success"
                         : partner.status === "good"
-                        ? "primary"
+                        ? "secondary" // Changed from "primary" to "secondary"
                         : "warning"
                     }
                     className="rounded-full text-xs"
