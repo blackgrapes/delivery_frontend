@@ -1,4 +1,4 @@
-// Sidebar.tsx - Updated with proper scroll isolation and persistent Quick Actions hide
+// Sidebar.tsx - Fixed with consistent useEffect dependencies
 "use client";
 
 import { useState, useMemo, memo, useEffect, useCallback } from "react";
@@ -181,7 +181,7 @@ interface SidebarProps {
 export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
   const { session } = useAuth();
   const pathname = usePathname();
-  // State to manage visibility of the Quick Actions card, initialized to 'false' to ensure useEffect runs
+  // State to manage visibility of the Quick Actions card
   const [isQuickActionsHidden, setIsQuickActionsHidden] = useState(false);
 
   const navigation = useMemo(
@@ -189,22 +189,27 @@ export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
     [session?.user?.role]
   );
 
-  // Load hidden state from localStorage on component mount
+  // Load hidden state from sessionStorage - fixed with proper dependencies
   useEffect(() => {
-    // Check if running in a client environment
-    if (typeof window !== "undefined") {
-      const isHidden = localStorage.getItem(QUICK_ACTIONS_KEY) === "true";
+    if (session?.user?.id && typeof window !== "undefined") {
+      // Use sessionStorage instead of localStorage
+      const isHidden =
+        sessionStorage.getItem(`${QUICK_ACTIONS_KEY}_${session.user.id}`) ===
+        "true";
       setIsQuickActionsHidden(isHidden);
+    } else {
+      // If no session, default to showing the card
+      setIsQuickActionsHidden(false);
     }
-  }, []);
+  }, [session?.user?.id]); // Added proper dependency
 
   const handleHideQuickActions = useCallback(() => {
     setIsQuickActionsHidden(true);
-    // Persist the choice
-    if (typeof window !== "undefined") {
-      localStorage.setItem(QUICK_ACTIONS_KEY, "true");
+    // Persist the choice in sessionStorage (cleared when browser closes)
+    if (session?.user?.id && typeof window !== "undefined") {
+      sessionStorage.setItem(`${QUICK_ACTIONS_KEY}_${session.user.id}`, "true");
     }
-  }, []);
+  }, [session?.user?.id]);
 
   const roleTitle = useMemo(() => {
     if (!session?.user) return "";
