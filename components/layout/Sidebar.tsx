@@ -1,3 +1,4 @@
+// Sidebar.tsx - Updated with proper scroll isolation
 "use client";
 
 import { useState, useMemo, memo } from "react";
@@ -7,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import { getNavigationForRole } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronRight, LogOut, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronRight, LogOut, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -171,7 +172,11 @@ const NavItem = memo(function NavItem({
 
 NavItem.displayName = "NavItem";
 
-export const Sidebar = memo(function Sidebar() {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
   const { session } = useAuth();
   const pathname = usePathname();
   const navigation = useMemo(
@@ -196,8 +201,30 @@ export const Sidebar = memo(function Sidebar() {
   if (!session) return null;
 
   return (
-    <aside className="flex h-full w-64 flex-col border-r border-border/60 bg-card/95 backdrop-blur-xl">
-      <div className="flex items-center gap-3 px-5 py-5 border-b">
+    <aside className="flex h-screen w-64 flex-col border-r border-border/60 bg-card/95 backdrop-blur-xl overflow-hidden">
+      {/* Mobile Close Button */}
+      <div className="flex items-center justify-between px-5 py-5 border-b border-border/60 lg:hidden flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-brand">
+            <span className="text-lg font-bold">BG</span>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-foreground">BlackGrapes</p>
+            <p className="text-xs text-muted-foreground">{roleTitle}</p>
+          </div>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="h-9 w-9"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Desktop Header */}
+      <div className="hidden lg:flex items-center gap-3 px-5 py-5 border-b border-border/60 flex-shrink-0">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-brand">
           <span className="text-lg font-bold">BG</span>
         </div>
@@ -207,15 +234,24 @@ export const Sidebar = memo(function Sidebar() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
-        <nav className="space-y-4 px-3 pb-24">
-          {navigation.map((item: any, idx: number) => (
-            <NavItem key={idx} item={item} pathname={pathname} />
-          ))}
-        </nav>
-      </ScrollArea>
+      {/* Scrollable Navigation Area */}
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <ScrollArea className="flex-1">
+          <nav className="space-y-4 px-3 py-4">
+            {navigation.map((item: any, idx: number) => (
+              <NavItem
+                key={idx}
+                item={item}
+                pathname={pathname}
+                onNavigate={onClose}
+              />
+            ))}
+          </nav>
+        </ScrollArea>
+      </div>
 
-      <div className="mt-auto px-4 pb-5">
+      {/* Fixed Bottom Section */}
+      <div className="border-t border-border/60 px-4 py-5 flex-shrink-0">
         <div className="rounded-xl bg-primary/10 p-4 shadow-card">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -226,7 +262,7 @@ export const Sidebar = memo(function Sidebar() {
                 Accelerate daily operations with intelligent automations.
               </p>
             </div>
-            <Sparkles className="h-5 w-5 text-primary" />
+            <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
           </div>
           <div className="mt-3 flex flex-col gap-2">
             <Button

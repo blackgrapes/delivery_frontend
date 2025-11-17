@@ -60,7 +60,10 @@ function getSuperAdminNavigation(): NavigationItem[] {
       children: [
         { title: "Main Dashboard", href: "/dashboard" },
         { title: "Operations Dashboard", href: "/dashboard/operations" },
-        { title: "Partner Performance", href: "/dashboard/partner-performance" },
+        {
+          title: "Partner Performance",
+          href: "/dashboard/partner-performance",
+        },
         { title: "Financial Overview", href: "/dashboard/financial" },
         { title: "GST Compliance", href: "/dashboard/gst-compliance" },
       ],
@@ -70,15 +73,16 @@ function getSuperAdminNavigation(): NavigationItem[] {
       icon: "Package",
       children: [
         { title: "Create Booking", href: "/dashboard/booking/create" },
-        { title: "Order Management", href: "/dashboard/orders" },
         { title: "All Orders", href: "/dashboard/orders/all" },
         { title: "Pending Pickups", href: "/dashboard/orders/pending-pickups" },
         { title: "In Transit", href: "/dashboard/orders/in-transit" },
-        { title: "Out for Delivery", href: "/dashboard/orders/out-for-delivery" },
+        {
+          title: "Out for Delivery",
+          href: "/dashboard/orders/out-for-delivery",
+        },
         { title: "Delivered", href: "/dashboard/orders/delivered" },
         { title: "Exceptions", href: "/dashboard/orders/exceptions" },
-        { title: "Quick Booking", href: "/dashboard/booking/quick" },
-        { title: "Bulk Booking", href: "/dashboard/booking/bulk" },
+        { title: "Quick Booking", href: "/dashboard/orders/quick" },
       ],
     },
     {
@@ -94,7 +98,7 @@ function getSuperAdminNavigation(): NavigationItem[] {
       title: "Tracking & POD",
       icon: "Search",
       children: [
-        { title: "Live Tracking", href: "/dashboard/tracking" },
+        { title: "Live Tracking", href: "/dashboard/tracking/live" },
         { title: "POD Capture", href: "/dashboard/pod/capture" },
         { title: "POD Verification", href: "/dashboard/pod/verification" },
         { title: "Missing POD", href: "/dashboard/pod/missing" },
@@ -108,7 +112,10 @@ function getSuperAdminNavigation(): NavigationItem[] {
         { title: "Create DRS", href: "/dashboard/drs/create" },
         { title: "Active DRS", href: "/dashboard/drs/active" },
         { title: "DRS History", href: "/dashboard/drs/history" },
-        { title: "Customer Tracking Portal", href: "/dashboard/tracking/portal" },
+        {
+          title: "Customer Tracking Portal",
+          href: "/dashboard/tracking/portal",
+        },
       ],
     },
     {
@@ -118,16 +125,28 @@ function getSuperAdminNavigation(): NavigationItem[] {
         {
           title: "Counter Manifest",
           children: [
-            { title: "Inward Processing", href: "/dashboard/manifest/counter/inward" },
+            {
+              title: "Inward Processing",
+              href: "/dashboard/manifest/counter/inward",
+            },
             { title: "Bulk Inward", href: "/dashboard/manifest/counter/bulk" },
-            { title: "Weight Updates", href: "/dashboard/manifest/counter/weight" },
+            {
+              title: "Weight Updates",
+              href: "/dashboard/manifest/counter/weight",
+            },
           ],
         },
         {
           title: "Forwarding Manifest",
           children: [
-            { title: "Create Manifest", href: "/dashboard/manifest/forwarding/create" },
-            { title: "Bag Tag Management", href: "/dashboard/manifest/bag-tags" },
+            {
+              title: "Create Manifest",
+              href: "/dashboard/manifest/forwarding/create",
+            },
+            {
+              title: "Bag Tag Management",
+              href: "/dashboard/manifest/bag-tags",
+            },
             { title: "Dispatch Console", href: "/dashboard/manifest/dispatch" },
             { title: "Manifest History", href: "/dashboard/manifest/history" },
           ],
@@ -140,7 +159,10 @@ function getSuperAdminNavigation(): NavigationItem[] {
       children: [
         { title: "All Branches", href: "/dashboard/branches" },
         { title: "Add Branch", href: "/dashboard/branches/add" },
-        { title: "Branch Performance", href: "/dashboard/branches/performance" },
+        {
+          title: "Branch Performance",
+          href: "/dashboard/branches/performance",
+        },
         { title: "Service Areas", href: "/dashboard/branches/service-areas" },
       ],
     },
@@ -148,8 +170,14 @@ function getSuperAdminNavigation(): NavigationItem[] {
       title: "Warehouse Operations",
       icon: "Warehouse",
       children: [
-        { title: "Inventory Management", href: "/dashboard/warehouse/inventory" },
-        { title: "Stock Reconciliation", href: "/dashboard/warehouse/reconciliation" },
+        {
+          title: "Inventory Management",
+          href: "/dashboard/warehouse/inventory",
+        },
+        {
+          title: "Stock Reconciliation",
+          href: "/dashboard/warehouse/reconciliation",
+        },
         { title: "Asset Tracking", href: "/dashboard/warehouse/assets" },
       ],
     },
@@ -159,8 +187,14 @@ function getSuperAdminNavigation(): NavigationItem[] {
       children: [
         { title: "All Partners", href: "/dashboard/partners" },
         { title: "Partner Onboarding", href: "/dashboard/partners/onboarding" },
-        { title: "Performance Scorecards", href: "/dashboard/partners/scorecards" },
-        { title: "Settlement Dashboard", href: "/dashboard/partners/settlement" },
+        {
+          title: "Performance Scorecards",
+          href: "/dashboard/partners/scorecards",
+        },
+        {
+          title: "Settlement Dashboard",
+          href: "/dashboard/partners/settlement",
+        },
       ],
     },
     {
@@ -177,10 +211,19 @@ function getSuperAdminNavigation(): NavigationItem[] {
       icon: "ShoppingCart",
       children: [
         { title: "Customer Directory", href: "/dashboard/customers" },
-        { title: "Customer Onboarding", href: "/dashboard/customers/onboarding" },
-        { title: "Service Agreements", href: "/dashboard/customers/agreements" },
+        {
+          title: "Customer Onboarding",
+          href: "/dashboard/customers/onboarding",
+        },
+        {
+          title: "Service Agreements",
+          href: "/dashboard/customers/agreements",
+        },
         { title: "Support Tickets", href: "/dashboard/customers/tickets" },
-        { title: "Pickup Requests", href: "/dashboard/customers/pickup-requests" },
+        {
+          title: "Pickup Requests",
+          href: "/dashboard/customers/pickup-requests",
+        },
       ],
     },
     {
@@ -206,9 +249,15 @@ function getSuperAdminNavigation(): NavigationItem[] {
         {
           title: "Billing & Payments",
           children: [
-            { title: "Payment Collection", href: "/dashboard/payments/collection" },
+            {
+              title: "Payment Collection",
+              href: "/dashboard/payments/collection",
+            },
             { title: "COD Management", href: "/dashboard/payments/cod" },
-            { title: "Settlement Reports", href: "/dashboard/payments/settlement" },
+            {
+              title: "Settlement Reports",
+              href: "/dashboard/payments/settlement",
+            },
             { title: "Tally Integration", href: "/dashboard/payments/tally" },
           ],
         },
@@ -222,16 +271,31 @@ function getSuperAdminNavigation(): NavigationItem[] {
           title: "Rider Management",
           children: [
             { title: "Rider Allocation", href: "/dashboard/riders/allocation" },
-            { title: "Performance Tracking", href: "/dashboard/riders/performance" },
-            { title: "Attendance & Shifts", href: "/dashboard/riders/attendance" },
+            {
+              title: "Performance Tracking",
+              href: "/dashboard/riders/performance",
+            },
+            {
+              title: "Attendance & Shifts",
+              href: "/dashboard/riders/attendance",
+            },
           ],
         },
         {
           title: "Exception Handling",
           children: [
-            { title: "Pending Exceptions", href: "/dashboard/exceptions/pending" },
-            { title: "Exception Workflow", href: "/dashboard/exceptions/workflow" },
-            { title: "Root Cause Analysis", href: "/dashboard/exceptions/analysis" },
+            {
+              title: "Pending Exceptions",
+              href: "/dashboard/exceptions/pending",
+            },
+            {
+              title: "Exception Workflow",
+              href: "/dashboard/exceptions/workflow",
+            },
+            {
+              title: "Root Cause Analysis",
+              href: "/dashboard/exceptions/analysis",
+            },
             { title: "Quality Control", href: "/dashboard/exceptions/quality" },
           ],
         },
@@ -244,8 +308,14 @@ function getSuperAdminNavigation(): NavigationItem[] {
         {
           title: "Operational Reports",
           children: [
-            { title: "Delivery Performance", href: "/dashboard/reports/delivery" },
-            { title: "Partner Performance", href: "/dashboard/reports/partner" },
+            {
+              title: "Delivery Performance",
+              href: "/dashboard/reports/delivery",
+            },
+            {
+              title: "Partner Performance",
+              href: "/dashboard/reports/partner",
+            },
             { title: "Branch Performance", href: "/dashboard/reports/branch" },
             { title: "Rider Performance", href: "/dashboard/reports/rider" },
           ],
@@ -255,7 +325,10 @@ function getSuperAdminNavigation(): NavigationItem[] {
           children: [
             { title: "Revenue Reports", href: "/dashboard/reports/revenue" },
             { title: "GST Compliance", href: "/dashboard/reports/gst" },
-            { title: "Settlement Reports", href: "/dashboard/reports/settlement" },
+            {
+              title: "Settlement Reports",
+              href: "/dashboard/reports/settlement",
+            },
             { title: "Business Intelligence", href: "/dashboard/reports/bi" },
           ],
         },
@@ -281,7 +354,10 @@ function getSuperAdminNavigation(): NavigationItem[] {
         { title: "Permissions", href: "/dashboard/admin/permissions" },
         { title: "Audit Logs", href: "/dashboard/admin/audit-logs" },
         { title: "System Settings", href: "/dashboard/admin/settings" },
-        { title: "Integration Management", href: "/dashboard/admin/integrations" },
+        {
+          title: "Integration Management",
+          href: "/dashboard/admin/integrations",
+        },
       ],
     },
   ];
@@ -295,7 +371,7 @@ function getPartnerAdminNavigation(): NavigationItem[] {
       icon: "Package",
       children: [
         { title: "Create Booking", href: "/dashboard/booking/create" },
-        { title: "All Orders", href: "/dashboard/orders" },
+        { title: "All Orders", href: "/dashboard/orders/all" },
         { title: "Pending Pickups", href: "/dashboard/orders/pending-pickups" },
         { title: "In Transit", href: "/dashboard/orders/in-transit" },
         { title: "Delivered", href: "/dashboard/orders/delivered" },
@@ -306,7 +382,7 @@ function getPartnerAdminNavigation(): NavigationItem[] {
       title: "Tracking & POD",
       icon: "Search",
       children: [
-        { title: "Live Tracking", href: "/dashboard/tracking" },
+        { title: "Live Tracking", href: "/dashboard/tracking/live" },
         { title: "POD Capture", href: "/dashboard/pod/capture" },
         { title: "POD Verification", href: "/dashboard/pod/verification" },
       ],
@@ -350,7 +426,7 @@ function getBranchAdminNavigation(): NavigationItem[] {
       icon: "Package",
       children: [
         { title: "Create Booking", href: "/dashboard/booking/create" },
-        { title: "All Orders", href: "/dashboard/orders" },
+        { title: "All Orders", href: "/dashboard/orders/all" },
         { title: "Pending Pickups", href: "/dashboard/orders/pending-pickups" },
         { title: "In Transit", href: "/dashboard/orders/in-transit" },
         { title: "Out for Delivery", href: "/dashboard/orders/out-for-delivery" },
@@ -370,7 +446,7 @@ function getBranchAdminNavigation(): NavigationItem[] {
       title: "Tracking & POD",
       icon: "Search",
       children: [
-        { title: "Live Tracking", href: "/dashboard/tracking" },
+        { title: "Live Tracking", href: "/dashboard/tracking/live" },
         { title: "POD Capture", href: "/dashboard/pod/capture" },
       ],
     },
@@ -425,7 +501,7 @@ function getDispatcherNavigation(): NavigationItem[] {
       title: "Order Management",
       icon: "Package",
       children: [
-        { title: "All Orders", href: "/dashboard/orders" },
+        { title: "All Orders", href: "/dashboard/orders/all" },
         { title: "Pending Pickups", href: "/dashboard/orders/pending-pickups" },
         { title: "In Transit", href: "/dashboard/orders/in-transit" },
         { title: "Out for Delivery", href: "/dashboard/orders/out-for-delivery" },
@@ -450,7 +526,7 @@ function getDispatcherNavigation(): NavigationItem[] {
       title: "Tracking",
       icon: "Search",
       children: [
-        { title: "Live Tracking", href: "/dashboard/tracking" },
+        { title: "Live Tracking", href: "/dashboard/tracking/live" },
       ],
     },
   ];
@@ -469,8 +545,8 @@ function getCustomerNavigation(): NavigationItem[] {
   return [
     { title: "Dashboard", href: "/dashboard", icon: "LayoutDashboard" },
     { title: "Create Order", href: "/dashboard/customer/booking", icon: "Package" },
-    { title: "My Orders", href: "/dashboard/customer/orders", icon: "FileText" },
-    { title: "Track Order", href: "/dashboard/tracking", icon: "Search" },
+    { title: "My Orders", href: "/dashboard/customer/orders/all", icon: "FileText" },
+    { title: "Track Order", href: "/dashboard/tracking/live", icon: "Search" },
     { title: "Pickup Requests", href: "/dashboard/customer/pickup-requests", icon: "Calendar" },
     { title: "Invoices", href: "/dashboard/customer/invoices", icon: "Receipt" },
   ];

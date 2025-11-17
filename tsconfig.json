@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/(dashboard)/dashboard/orders/pending-pickups"  ],
   "exclude": ["node_modules"]
 }

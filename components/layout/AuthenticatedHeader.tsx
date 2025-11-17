@@ -1,3 +1,4 @@
+// AuthenticatedHeader.tsx - Updated with menu functionality
 "use client";
 
 import Link from "next/link";
@@ -33,7 +34,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePermissions } from "@/hooks/usePermissions";
 import { PermissionGate } from "@/components/auth/PermissionGate";
 
-export function AuthenticatedHeader() {
+interface AuthenticatedHeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function AuthenticatedHeader({ onMenuClick }: AuthenticatedHeaderProps) {
   const { session, logout } = useAuth();
   const { can, role } = usePermissions();
   const router = useRouter();
@@ -93,23 +98,24 @@ export function AuthenticatedHeader() {
             size="icon"
             className="lg:hidden"
             aria-label="Open navigation"
+            onClick={onMenuClick}
           >
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex flex-col lg:hidden">
-            <span className="text-base font-semibold text-foreground">
+            <span className="text-base font-semibold text-foreground capitalize">
               {currentPageLabel}
             </span>
             <span className="text-xs text-muted-foreground">Admin Panel</span>
           </div>
         </div>
 
-        <div className="ml-auto flex flex-1 items-center gap-2 lg:flex-none">
-          <div className="relative hidden flex-1 items-center md:flex">
+        <div className="ml-auto flex flex-1 items-center justify-end gap-2 lg:flex-none lg:justify-between">
+          <div className="relative hidden flex-1 items-center md:flex mr-4 max-w-xl">
             <Search className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search shipments, branches, partners, GST..."
-              className="h-11 rounded-lg border-border/80 pl-10 pr-24 text-sm shadow-inner"
+              className="h-11 rounded-lg border-border/80 pl-10 pr-24 text-sm shadow-inner w-full"
             />
             <div className="pointer-events-none absolute right-12 hidden items-center gap-1 text-xs font-medium text-muted-foreground xl:flex">
               <kbd className="rounded-md bg-muted px-2 py-1">⌘</kbd>
@@ -126,130 +132,136 @@ export function AuthenticatedHeader() {
             </Button>
           </div>
 
-          <Button
-            variant="outline"
-            size="icon"
-            className="md:hidden"
-            aria-label="Search"
-          >
-            <Search className="h-4 w-4" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-            <Badge className="absolute -right-1 -top-1 border-0 bg-destructive px-1 py-0 text-[0.65rem] leading-none text-destructive-foreground">
-              12
-            </Badge>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" aria-label="Open workspace">
-                <LayoutGrid className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60">
-              <DropdownMenuLabel>Workspace Shortcuts</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Shipment Command Center</DropdownMenuItem>
-              <DropdownMenuItem>Branch Analytics Hub</DropdownMenuItem>
-              <DropdownMenuItem>GST Compliance Room</DropdownMenuItem>
-              <DropdownMenuItem>Partner Collaboration Desk</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <div className="hidden items-center gap-2 xl:flex">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              size="sm"
-              className="rounded-lg border-border/80"
+              size="icon"
+              className="md:hidden"
+              aria-label="Search"
             >
-              <Plus className="h-4 w-4" />
-              Add Branch
+              <Search className="h-4 w-4" />
             </Button>
+
             <Button
-              variant="default"
-              size="sm"
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold shadow-brand hover:bg-primary/90"
+              variant="ghost"
+              size="icon"
+              className="relative"
+              aria-label="Notifications"
             >
-              Create Shipment
+              <Bell className="h-5 w-5" />
+              <Badge className="absolute -right-1 -top-1 border-0 bg-destructive px-1 py-0 text-[0.65rem] leading-none text-destructive-foreground">
+                12
+              </Badge>
             </Button>
-          </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                className="flex items-center gap-3 rounded-full border border-border/70 bg-card/80 px-2 py-1 pr-3 text-left shadow-card hover:bg-card"
-                variant="ghost"
-              >
-                <Avatar className="h-9 w-9">
-                  <AvatarImage
-                    src="https://i.pravatar.cc/100?img=12"
-                    alt={session?.user.name || "User"}
-                  />
-                  <AvatarFallback>{userInitials}</AvatarFallback>
-                </Avatar>
-                <div className="hidden text-left text-xs sm:block">
-                  <p className="text-sm font-semibold text-foreground">
-                    {session?.user.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {session?.user.role}
-                  </p>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuLabel>Signed in as</DropdownMenuLabel>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <UserCircle2 className="h-4 w-4" />
-                Profile Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem className="flex items-center gap-2">
-                <Settings className="h-4 w-4" />
-                Admin Preferences
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {session?.isImpersonating && (
-                <DropdownMenuItem className="flex items-center gap-2 text-destructive">
-                  <Shield className="h-4 w-4" />
-                  Impersonating Mode
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/dashboard/profile"
-                  className="cursor-pointer flex items-center gap-2"
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  aria-label="Open workspace"
                 >
-                  <User className="h-4 w-4" /> Profile
-                </Link>
-              </DropdownMenuItem>
-              <PermissionGate action="view" resource="system_settings">
+                  <LayoutGrid className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60">
+                <DropdownMenuLabel>Workspace Shortcuts</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Shipment Command Center</DropdownMenuItem>
+                <DropdownMenuItem>Branch Analytics Hub</DropdownMenuItem>
+                <DropdownMenuItem>GST Compliance Room</DropdownMenuItem>
+                <DropdownMenuItem>Partner Collaboration Desk</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <div className="hidden items-center gap-2 xl:flex">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-lg border-border/80"
+              >
+                <Plus className="h-4 w-4" />
+                Add Branch
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold shadow-brand hover:bg-primary/90"
+              >
+                Create Shipment
+              </Button>
+            </div>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="flex items-center gap-3 rounded-full border border-border/70 bg-card/80 px-2 py-1 pr-3 text-left shadow-card hover:bg-card"
+                  variant="ghost"
+                >
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage
+                      src="https://i.pravatar.cc/100?img=12"
+                      alt={session?.user.name || "User"}
+                    />
+                    <AvatarFallback>{userInitials}</AvatarFallback>
+                  </Avatar>
+                  <div className="hidden text-left text-xs sm:block">
+                    <p className="text-sm font-semibold text-foreground">
+                      {session?.user.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground capitalize">
+                      {session?.user.role?.replace(/_/g, " ")}
+                    </p>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel>Signed in as</DropdownMenuLabel>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <UserCircle2 className="h-4 w-4" />
+                  Profile Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Settings className="h-4 w-4" />
+                  Admin Preferences
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {session?.isImpersonating && (
+                  <DropdownMenuItem className="flex items-center gap-2 text-destructive">
+                    <Shield className="h-4 w-4" />
+                    Impersonating Mode
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/dashboard/settings"
+                    href="/dashboard/profile"
                     className="cursor-pointer flex items-center gap-2"
                   >
-                    <Settings className="h-4 w-4" /> Settings
+                    <User className="h-4 w-4" /> Profile
                   </Link>
                 </DropdownMenuItem>
-              </PermissionGate>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="cursor-pointer flex items-center gap-2 text-destructive"
-              >
-                <LogOut className="h-4 w-4" /> Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <PermissionGate action="view" resource="system_settings">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard/settings"
+                      className="cursor-pointer flex items-center gap-2"
+                    >
+                      <Settings className="h-4 w-4" /> Settings
+                    </Link>
+                  </DropdownMenuItem>
+                </PermissionGate>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer flex items-center gap-2 text-destructive"
+                >
+                  <LogOut className="h-4 w-4" /> Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
     </header>
