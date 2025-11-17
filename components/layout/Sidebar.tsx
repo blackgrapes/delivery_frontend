@@ -1,7 +1,7 @@
-// Sidebar.tsx - Updated with proper scroll isolation
+// Sidebar.tsx - Updated with proper scroll isolation and persistent Quick Actions hide
 "use client";
 
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -172,6 +172,8 @@ const NavItem = memo(function NavItem({
 
 NavItem.displayName = "NavItem";
 
+const QUICK_ACTIONS_KEY = "quickActionsHidden";
+
 interface SidebarProps {
   onClose?: () => void;
 }
@@ -179,10 +181,30 @@ interface SidebarProps {
 export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
   const { session } = useAuth();
   const pathname = usePathname();
+  // State to manage visibility of the Quick Actions card, initialized to 'false' to ensure useEffect runs
+  const [isQuickActionsHidden, setIsQuickActionsHidden] = useState(false);
+
   const navigation = useMemo(
     () => (session?.user ? getNavigationForRole(session.user.role) : []),
     [session?.user?.role]
   );
+
+  // Load hidden state from localStorage on component mount
+  useEffect(() => {
+    // Check if running in a client environment
+    if (typeof window !== "undefined") {
+      const isHidden = localStorage.getItem(QUICK_ACTIONS_KEY) === "true";
+      setIsQuickActionsHidden(isHidden);
+    }
+  }, []);
+
+  const handleHideQuickActions = useCallback(() => {
+    setIsQuickActionsHidden(true);
+    // Persist the choice
+    if (typeof window !== "undefined") {
+      localStorage.setItem(QUICK_ACTIONS_KEY, "true");
+    }
+  }, []);
 
   const roleTitle = useMemo(() => {
     if (!session?.user) return "";
@@ -234,7 +256,7 @@ export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
         </div>
       </div>
 
-      {/* Scrollable Navigation Area */}
+      {/* Scrollable Navigation Area (Takes remaining height) */}
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <ScrollArea className="flex-1">
           <nav className="space-y-4 px-3 py-4">
@@ -252,36 +274,54 @@ export const Sidebar = memo(function Sidebar({ onClose }: SidebarProps) {
 
       {/* Fixed Bottom Section */}
       <div className="border-t border-border/60 px-4 py-5 flex-shrink-0">
-        <div className="rounded-xl bg-primary/10 p-4 shadow-card">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                Quick Actions
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Accelerate daily operations with intelligent automations.
-              </p>
+        {!isQuickActionsHidden && (
+          <div className="rounded-lg bg-primary/10 p-3 shadow-card transition-all duration-300 mb-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground">
+                  Quick Actions
+                </p>
+                <p className="text-[0.7rem] text-muted-foreground leading-snug">
+                  Accelerate daily operations.
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-muted-foreground hover:bg-primary/20 hover:text-primary"
+                  onClick={handleHideQuickActions}
+                  aria-label="Hide quick actions"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
-            <Sparkles className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="mt-2 flex flex-col gap-1.5">
+              <Button
+                variant="secondary"
+                size="xs" // Smaller size class
+                className="h-7 text-xs justify-start bg-primary text-primary-foreground shadow-brand hover:bg-primary/90"
+              >
+                Schedule Pickup
+              </Button>
+              <Button
+                variant="outline"
+                size="xs" // Smaller size class
+                className="h-7 text-xs justify-start"
+              >
+                Generate Report
+              </Button>
+            </div>
           </div>
-          <div className="mt-3 flex flex-col gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="justify-start bg-primary text-primary-foreground shadow-brand hover:bg-primary/90"
-            >
-              Schedule Pickup
-            </Button>
-            <Button variant="outline" size="sm" className="justify-start">
-              Generate Report
-            </Button>
-          </div>
-        </div>
+        )}
 
+        {/* Logout Button */}
         <Button
           variant="ghost"
           size="sm"
-          className="mt-4 w-full justify-start gap-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+          className="w-full justify-start gap-2 text-white hover:bg-destructive/10 hover:text-destructive bg-primary"
         >
           <LogOut className="h-4 w-4" />
           Log out
