@@ -1,4 +1,4 @@
-import CreateBooking from "@/components/booking/(create)/BookingForm";
+import CreateBooking from "@/components/booking/(create)/CreateBooking";
 
 export default function CreateBookingPage() {
   return <CreateBooking />;
