@@ -349,8 +349,8 @@ function getSuperAdminNavigation(): NavigationItem[] {
       title: "System Admin",
       icon: "Shield",
       children: [
-        { title: "User Management", href: "/dashboard/users" },
-        { title: "User Roles", href: "/dashboard/admin/roles" },
+        { title: "User Management", href: "/dashboard/roll-permission/users" },
+        { title: "User Roles", href: "/dashboard/roll-permission/roles" },
         { title: "Permissions", href: "/dashboard/admin/permissions" },
         { title: "Audit Logs", href: "/dashboard/admin/audit-logs" },
         { title: "System Settings", href: "/dashboard/admin/settings" },

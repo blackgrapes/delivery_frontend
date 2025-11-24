@@ -6,12 +6,12 @@ import { Award, Shield, AlertTriangle, Calendar, Download } from "lucide-react";
 export function PartnerPerformanceHeader() {
   return (
     <section className="rounded-3xl border border-border/70 bg-card/95 p-7 shadow-card">
-      <div className="flex flex-wrap items-start justify-between gap-5">
+      <div className="flex flex-wrap sm:flex-nowrap items-start justify-between gap-5">
         <div className="space-y-3">
           <Badge className="rounded-full bg-primary/15 px-4 py-1 text-primary">
             Partner Network Intelligence
           </Badge>
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             <h1 className="text-display-1 leading-tight">
               Partner Performance & SLA Compliance
             </h1>
