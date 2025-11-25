@@ -19,7 +19,6 @@ const DocumentSearch = ({
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  // Auto-suggestions as user types
   useEffect(() => {
     if (documentNo.trim().length > 0) {
       const results = customers.filter(
@@ -38,7 +37,7 @@ const DocumentSearch = ({
 
   const handleSearch = () => {
     if (!documentNo.trim()) {
-      setSearchResults(customers); // Show all if empty
+      setSearchResults(customers);
       setShowSuggestions(true);
       return;
     }
@@ -62,7 +61,6 @@ const DocumentSearch = ({
   };
 
   const handleAddNew = () => {
-    // Clear and show all customers
     setDocumentNo("");
     setSearchResults(customers);
     setShowSuggestions(true);
@@ -118,7 +116,6 @@ const DocumentSearch = ({
         </div>
       </div>
 
-      {/* Suggestions Dropdown */}
       {showSuggestions && searchResults.length > 0 && (
         <div className="border rounded-lg p-3 bg-white shadow-lg max-h-60 overflow-y-auto">
           <Label className="text-sm font-medium mb-2 block">
