@@ -1,7 +1,7 @@
 // @/components/booking/create/CreateBooking.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Printer, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -58,6 +58,31 @@ const CreateBooking = () => {
     remark: "",
   });
 
+  // Calculate net charges and net amount automatically
+  useEffect(() => {
+    const charges = parseFloat(formData.charges) || 0;
+    const otherAddLess = parseFloat(formData.otherAddLess) || 0;
+    const disc = parseFloat(formData.disc) || 0;
+    const fuelPercent = parseFloat(formData.fuelPercent) || 0;
+    const tax = parseFloat(formData.tax) || 0;
+
+    const netCharges = charges + otherAddLess;
+    const fuelAmount = netCharges * (fuelPercent / 100);
+    const netAmount = netCharges - disc + fuelAmount + tax;
+
+    setFormData((prev) => ({
+      ...prev,
+      netCharges: netCharges.toFixed(2),
+      netAmount: netAmount.toFixed(2),
+    }));
+  }, [
+    formData.charges,
+    formData.otherAddLess,
+    formData.disc,
+    formData.fuelPercent,
+    formData.tax,
+  ]);
+
   const handleDocumentSelect = (customer: Customer) => {
     setFormData((prev) => ({
       ...prev,
@@ -72,6 +97,18 @@ const CreateBooking = () => {
           ? customer.pickupLocations[0]
           : null,
     }));
+
+    // Reset manual sender when selecting from search
+    setManualSender({
+      name: "",
+      contactPerson: "",
+      address1: "",
+      city: "",
+      station: "",
+      pincode: "",
+      mobileNo: "",
+      gstin: "",
+    });
   };
 
   const handleFormChange = (field: string, value: string) => {
@@ -186,6 +223,11 @@ const CreateBooking = () => {
     });
   };
 
+  // Clear sender and enable manual input
+  const handleClearSender = () => {
+    setFormData((prev) => ({ ...prev, sender: null }));
+  };
+
   if (showPrint) {
     return (
       <div className="p-6 space-y-6 print:p-0 print:space-y-0">
@@ -234,7 +276,7 @@ const CreateBooking = () => {
         </div>
         <Button
           onClick={handleCreateBooking}
-          disabled={!formData.sender}
+          disabled={!formData.sender || !formData.receiver}
           className="gap-2 rounded-xl bg-primary text-primary-foreground"
         >
           <Printer className="h-4 w-4" />
@@ -256,12 +298,24 @@ const CreateBooking = () => {
         {/* Left Side - Sender Card (Details + Booking Details) */}
         <Card className="rounded-2xl border-border/70">
           <CardContent className="p-6">
-            <h2 className="text-xl font-bold mb-4">Sender Details</h2>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Sender Details</h2>
+              {formData.sender && (
+                <Button
+                  onClick={handleClearSender}
+                  variant="outline"
+                  size="sm"
+                  className="text-xs"
+                >
+                  Clear & Enter Manually
+                </Button>
+              )}
+            </div>
 
             {/* Sender Information */}
             <div className="space-y-4 mb-6">
-              {formData.sender ? (
-                // Auto-filled sender details
+              {formData.sender && formData.sender.id !== "manual-sender" ? (
+                // Auto-filled sender details (from search)
                 <div className="space-y-3">
                   {/* Pickup Location Dropdown */}
                   {formData.sender.usePickupLocation &&
@@ -314,7 +368,11 @@ const CreateBooking = () => {
                   <div>
                     <label className="text-sm font-medium">Address</label>
                     <input
-                      value={`${formData.sender.address1}, ${formData.sender.address2}`}
+                      value={`${formData.sender.address1}${
+                        formData.sender.address2
+                          ? ", " + formData.sender.address2
+                          : ""
+                      }`}
                       readOnly
                       className="w-full p-2 border rounded-lg bg-gray-50"
                     />
@@ -528,6 +586,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Weight</label>
                   <input
                     type="number"
+                    step="0.001"
                     value={formData.weight}
                     onChange={(e) => handleFormChange("weight", e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white"
@@ -538,6 +597,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Charge Wt.</label>
                   <input
                     type="number"
+                    step="0.001"
                     value={formData.chargeWeight}
                     onChange={(e) =>
                       handleFormChange("chargeWeight", e.target.value)
@@ -550,6 +610,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Rate</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.rate}
                     onChange={(e) => handleFormChange("rate", e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white"
@@ -560,6 +621,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">FOV Amt</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.fovAmt}
                     onChange={(e) => handleFormChange("fovAmt", e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white"
@@ -580,8 +642,9 @@ const CreateBooking = () => {
             <div className="space-y-4 mb-6">
               {formData.sender &&
               formData.sender.hasReceiver &&
-              formData.sender.receivers.length > 0 ? (
-                // Auto-filled receiver with dropdown
+              formData.sender.receivers.length > 0 &&
+              formData.sender.id !== "manual-sender" ? (
+                // Auto-filled receiver with dropdown (only when sender is from search)
                 <div className="space-y-3">
                   {/* Receiver Selection Dropdown */}
                   <div className="space-y-2">
@@ -670,7 +733,7 @@ const CreateBooking = () => {
                   )}
                 </div>
               ) : (
-                // Manual receiver input
+                // Manual receiver input (always available)
                 <div className="space-y-3 p-3 border rounded-lg bg-blue-50">
                   <h4 className="font-medium text-sm text-blue-800">
                     Enter Receiver Details Manually
@@ -758,6 +821,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Charges</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.charges}
                     onChange={(e) =>
                       handleFormChange("charges", e.target.value)
@@ -770,6 +834,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Other Add/Less</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.otherAddLess}
                     onChange={(e) =>
                       handleFormChange("otherAddLess", e.target.value)
@@ -782,6 +847,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Net Charges</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.netCharges}
                     readOnly
                     className="w-full p-2 border rounded-lg bg-gray-50"
@@ -792,6 +858,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Discount</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.disc}
                     onChange={(e) => handleFormChange("disc", e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white"
@@ -802,6 +869,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Fuel %</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.fuelPercent}
                     onChange={(e) =>
                       handleFormChange("fuelPercent", e.target.value)
@@ -814,6 +882,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Tax</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.tax}
                     onChange={(e) => handleFormChange("tax", e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white"
@@ -824,6 +893,7 @@ const CreateBooking = () => {
                   <label className="text-sm font-medium">Net Amount</label>
                   <input
                     type="number"
+                    step="0.01"
                     value={formData.netAmount}
                     readOnly
                     className="w-full p-2 border rounded-lg bg-gray-50 font-bold"
