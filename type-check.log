@@ -1,0 +1,37 @@
+﻿
+> delivery_f@0.1.0 type-check
+> tsc --noEmit
+
+components/master/(customers)/CustomerForm.tsx(96,5): error TS2353: Object literal may only specify known properties, and 'billingType' does not exist in type 'CustomerFormData | (() => CustomerFormData)'.
+components/master/(customers)/CustomerForm.tsx(147,9): error TS2353: Object literal may only specify known properties, and 'billingType' does not exist in type 'SetStateAction<CustomerFormData>'.
+components/master/(customers)/CustomerForm.tsx(147,31): error TS2339: Property 'billingType' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(148,31): error TS2339: Property 'creditLimit' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(149,30): error TS2339: Property 'creditDays' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(150,38): error TS2339: Property 'defaultPaymentMode' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(151,29): error TS2551: Property 'kycStatus' does not exist on type 'Customer'. Did you mean 'status'?
+components/master/(customers)/CustomerForm.tsx(152,35): error TS2339: Property 'kycDocumentType' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(153,37): error TS2339: Property 'kycDocumentNumber' does not exist on type 'Customer'.
+components/master/(customers)/CustomerForm.tsx(572,37): error TS2339: Property 'billingType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(574,41): error TS2345: Argument of type '"billingType"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(597,27): error TS2339: Property 'billingType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(610,41): error TS2339: Property 'creditLimit' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(613,29): error TS2345: Argument of type '"creditLimit"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(632,41): error TS2339: Property 'creditDays' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(635,29): error TS2345: Argument of type '"creditDays"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(653,37): error TS2339: Property 'defaultPaymentMode' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(655,41): error TS2345: Argument of type '"defaultPaymentMode"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(685,37): error TS2551: Property 'kycStatus' does not exist on type 'CustomerFormData'. Did you mean 'status'?
+components/master/(customers)/CustomerForm.tsx(687,41): error TS2345: Argument of type '"kycStatus"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(707,37): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(709,41): error TS2345: Argument of type '"kycDocumentType"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(727,27): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(730,33): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(731,33): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(733,33): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(735,33): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(737,33): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(742,39): error TS2339: Property 'kycDocumentNumber' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(744,43): error TS2345: Argument of type '"kycDocumentNumber"' is not assignable to parameter of type 'keyof CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(748,34): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(customers)/CustomerForm.tsx(750,38): error TS2339: Property 'kycDocumentType' does not exist on type 'CustomerFormData'.
+components/master/(rates)/RateDashboard.tsx(749,28): error TS2304: Cannot find name 'Shield'.

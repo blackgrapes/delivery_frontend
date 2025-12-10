@@ -38,8 +38,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const currentSession = await mockApi.getSession();
       if (currentSession && checkSessionExpiry(currentSession)) {
+        console.log("AuthContext: Session loaded", currentSession);
         setSession(currentSession);
       } else {
+        console.log("AuthContext: Session expired or invalid");
         // Session expired
         if (typeof window !== "undefined") {
           localStorage.removeItem(SESSION_STORAGE_KEY);
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.error("Failed to load session:", error);
       setSession(null);
     } finally {
+      console.log("AuthContext: Loading finished");
       setLoading(false);
     }
   }, [checkSessionExpiry]);

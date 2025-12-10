@@ -33,6 +33,13 @@ export interface Customer {
   remark: string;
   createdAt: string;
   updatedAt: string;
+  billingType?: string;
+  creditLimit?: number;
+  creditDays?: number;
+  defaultPaymentMode?: string;
+  kycStatus?: string;
+  kycDocumentType?: string;
+  kycDocumentNumber?: string;
 }
 
 export interface CustomerFormData {
@@ -65,6 +72,13 @@ export interface CustomerFormData {
   bookedBy: string;
   bookedDate: string;
   remark: string;
+  billingType?: string;
+  creditLimit?: number;
+  creditDays?: number;
+  defaultPaymentMode?: string;
+  kycStatus?: string;
+  kycDocumentType?: string;
+  kycDocumentNumber?: string;
 }
 
 export interface Receiver {

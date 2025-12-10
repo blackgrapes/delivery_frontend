@@ -4,12 +4,23 @@ export interface BookingFormData {
   sender: Customer | null;
   receiver: Receiver | null;
   pickupLocation: PickupLocation | null;
+
+  // Shipment Details
   contents: string;
-  payMode: string;
+  mode: string;
+  paymentMode: string;
   forwardTo: string;
   thru: string;
+
+  // Weight & Dimensions
   weight: string;
-  chargeWeight: string;
+  length: string;
+  breadth: string;
+  height: string;
+  volumetricWeight: string;
+  chargeableWeight: string;
+
+  // Charges
   rate: string;
   fovAmt: string;
   charges: string;
@@ -19,7 +30,28 @@ export interface BookingFormData {
   fuelPercent: string;
   tax: string;
   netAmount: string;
+  invoiceValue: string;
+  baseFreight: string;
+  taxPercent: string;
+  taxAmount: string;
+
+  // Compliance
+  ewayBillNo: string;
+  ewayValidityStart: string;
+  ewayValidityEnd: string;
+
+  // Misc
   remark: string;
+  bookingSource: string;
+  status: string;
+
+  // Rate Calculation
+  distanceZone: string;
+  serviceType: string;
+  packagingType: string;
+  insuranceRequired: boolean;
+  declaredValue: string;
+  codAmount: string;
 }
 
 export interface Customer {
@@ -43,6 +75,26 @@ export interface Customer {
   usePickupLocation: boolean;
   pickupLocations: PickupLocation[];
   status: "active" | "inactive";
+
+  // Additional fields
+  fuelCharges?: number;
+  fovCharges?: number;
+  quotationType?: string;
+  awt?: number;
+  category?: string;
+  paymentMode?: string;
+  accountGroup?: string;
+  isInterStateDealer?: boolean;
+  bookedBy?: string;
+  bookedDate?: string;
+  remark?: string;
+  billingType?: string;
+  creditLimit?: number;
+  creditDays?: number;
+  defaultPaymentMode?: string;
+  kycStatus?: string;
+  kycDocumentType?: string;
+  kycDocumentNumber?: string;
 }
 
 export interface Receiver {
