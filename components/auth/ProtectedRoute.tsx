@@ -29,8 +29,15 @@ export function ProtectedRoute({
   const hasAccess = useMemo(() => {
     if (!session) return false;
 
+    console.log("ProtectedRoute: Checking access", {
+      role: session?.user.role,
+      allowedRoles,
+      requiredPermission
+    });
+
     // Check role-based access
     if (allowedRoles && !allowedRoles.includes(session.user.role)) {
+      console.warn("ProtectedRoute: Role mismatch");
       return false;
     }
 
@@ -39,6 +46,7 @@ export function ProtectedRoute({
       requiredPermission &&
       !can(requiredPermission.action as any, requiredPermission.resource as any)
     ) {
+      console.warn("ProtectedRoute: Permission denied");
       return false;
     }
 
@@ -46,14 +54,17 @@ export function ProtectedRoute({
   }, [session, allowedRoles, requiredPermission, can]);
 
   useEffect(() => {
+    console.log("ProtectedRoute: Effect triggered", { loading, session: !!session, hasAccess });
     if (!loading) {
       if (!session) {
+        console.log("ProtectedRoute: No session, redirecting to login");
         const loginUrl = `/login?redirect=${encodeURIComponent(pathname)}`;
         router.replace(loginUrl);
         return;
       }
 
       if (!hasAccess) {
+        console.log("ProtectedRoute: No access, redirecting to dashboard");
         router.replace("/dashboard");
         return;
       }

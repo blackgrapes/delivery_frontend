@@ -8,6 +8,11 @@ import {
   AlertCircle,
   Plus,
   Trash2,
+  CreditCard,
+  FileText,
+  MapPin,
+  User,
+  Shield,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,6 +62,7 @@ interface GstApiResponse {
 
 const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
   const [formData, setFormData] = useState<CustomerFormData>({
+    // Existing fields
     name: "",
     contactPerson: "",
     address1: "",
@@ -86,6 +92,16 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
     bookedBy: "ADMIN",
     bookedDate: new Date().toLocaleString("en-IN"),
     remark: "",
+    // New fields - SIRF JARURI CHIZE
+    billingType: "PREPAID",
+    creditLimit: 0,
+    creditDays: 0,
+    defaultPaymentMode: "CASH",
+    // KYC Fields (optional but useful)
+    kycStatus: "NOT_VERIFIED",
+    kycDocumentType: "",
+    kycDocumentNumber: "",
+    // SIMPLIFIED - Sirf important fields
   });
 
   const [gstSearch, setGstSearch] = useState("");
@@ -97,6 +113,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
   useEffect(() => {
     if (customer) {
       setFormData({
+        // Existing fields
         name: customer.name,
         contactPerson: customer.contactPerson,
         address1: customer.address1,
@@ -126,6 +143,14 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
         bookedBy: customer.bookedBy,
         bookedDate: customer.bookedDate,
         remark: customer.remark,
+        // New fields
+        billingType: customer.billingType || "PREPAID",
+        creditLimit: customer.creditLimit || 0,
+        creditDays: customer.creditDays || 0,
+        defaultPaymentMode: customer.defaultPaymentMode || "CASH",
+        kycStatus: customer.kycStatus || "NOT_VERIFIED",
+        kycDocumentType: customer.kycDocumentType || "",
+        kycDocumentNumber: customer.kycDocumentNumber || "",
       });
       if (customer.gstin) {
         setGstSearch(customer.gstin);
@@ -156,7 +181,6 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
         const taxpayer = data.taxpayerInfo;
         const address = taxpayer.pradr.addr;
 
-        // Build address lines
         const addressLine1 = [address.bno, address.st]
           .filter(Boolean)
           .join(", ");
@@ -176,7 +200,6 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
           jurisdiction: taxpayer.stj,
         });
 
-        // Auto-fill form with GST data
         setFormData((prev) => ({
           ...prev,
           name: taxpayer.lgnm || prev.name,
@@ -282,7 +305,6 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
     type: "receiver" | "pickup",
     index: number
   ) => {
-    // Simulate pincode suggestions (in real app, this would be an API call)
     if (pincode.length >= 3) {
       setPincodeSuggestions(["500070", "500071", "500072", "302022", "110017"]);
     } else {
@@ -411,7 +433,12 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 </h3>
 
                 <div className="space-y-2">
-                  <Label htmlFor="name">Company Name *</Label>
+                  <Label htmlFor="name">
+                    Company/Individual Name *
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (who will send the courier)
+                    </span>
+                  </Label>
                   <Input
                     id="name"
                     value={formData.name}
@@ -422,7 +449,12 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="contactPerson">Contact Person *</Label>
+                  <Label htmlFor="contactPerson">
+                    Contact Person *
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (contact for booking)
+                    </span>
+                  </Label>
                   <Input
                     id="contactPerson"
                     value={formData.contactPerson}
@@ -435,52 +467,18 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="gstin">GSTIN</Label>
+                  <Label htmlFor="gstin">
+                    GSTIN
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (For Invoice)
+                    </span>
+                  </Label>
                   <Input
                     id="gstin"
                     value={formData.gstin}
                     onChange={(e) => handleInputChange("gstin", e.target.value)}
                     className="rounded-lg"
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="category">Category</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) =>
-                        handleInputChange("category", value)
-                      }
-                    >
-                      <SelectTrigger className="rounded-lg">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="CUSTOMER">Customer</SelectItem>
-                        <SelectItem value="VENDOR">Vendor</SelectItem>
-                        <SelectItem value="PARTNER">Partner</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="status">Status</Label>
-                    <Select
-                      value={formData.status}
-                      onValueChange={(value: "active" | "inactive") =>
-                        handleInputChange("status", value)
-                      }
-                    >
-                      <SelectTrigger className="rounded-lg">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
               </div>
 
@@ -491,7 +489,12 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 </h3>
 
                 <div className="space-y-2">
-                  <Label htmlFor="mobileNo">Mobile Number *</Label>
+                  <Label htmlFor="mobileNo">
+                    Mobile Number *
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (for OTP and updates)
+                    </span>
+                  </Label>
                   <Input
                     id="mobileNo"
                     value={formData.mobileNo}
@@ -505,7 +508,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="phoneO">Phone (O)</Label>
+                    <Label htmlFor="phoneO">Phone (Office)</Label>
                     <Input
                       id="phoneO"
                       value={formData.phoneO}
@@ -517,7 +520,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phoneR">Phone (R)</Label>
+                    <Label htmlFor="phoneR">Phone (Residence)</Label>
                     <Input
                       id="phoneR"
                       value={formData.phoneR}
@@ -530,7 +533,12 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">
+                    Email
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (for Invoice and receipts)
+                    </span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -542,10 +550,220 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
               </div>
             </div>
 
+            {/* Billing & Payment Information */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground border-b pb-2 flex items-center gap-2">
+                  <CreditCard className="h-4 w-4" />
+                  Billing & Payment
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (money transactions)
+                  </span>
+                </h3>
+
+                <div className="space-y-2">
+                  <Label htmlFor="billingType">
+                    Billing Type *
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (payment before/after delivery)
+                    </span>
+                  </Label>
+                  <Select
+                    value={formData.billingType}
+                    onValueChange={(value) =>
+                      handleInputChange("billingType", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select billing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PREPAID">
+                        🟢 Prepaid (payment in advance)
+                      </SelectItem>
+                      <SelectItem value="CREDIT">
+                        🔵 Credit (payment after delivery)
+                      </SelectItem>
+                      <SelectItem value="COD">
+                        🟡 Cash on Delivery (receiver will pay)
+                      </SelectItem>
+                      <SelectItem value="HYBRID">
+                        🟣 Hybrid (mixed payment)
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {formData.billingType === "CREDIT" && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="creditLimit">
+                        Credit Limit (₹)
+                        <span className="text-xs text-muted-foreground ml-2">
+                          (how much credit can be given)
+                        </span>
+                      </Label>
+                      <Input
+                        id="creditLimit"
+                        type="number"
+                        min="0"
+                        value={formData.creditLimit}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "creditLimit",
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
+                        className="rounded-lg"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="creditDays">
+                        Credit Days
+                        <span className="text-xs text-muted-foreground ml-2">
+                          (in how many days payment should be made)
+                        </span>
+                      </Label>
+                      <Input
+                        id="creditDays"
+                        type="number"
+                        min="0"
+                        value={formData.creditDays}
+                        onChange={(e) =>
+                          handleInputChange(
+                            "creditDays",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                        className="rounded-lg"
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="defaultPaymentMode">
+                    Default Payment Mode
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (how payment will be made)
+                    </span>
+                  </Label>
+                  <Select
+                    value={formData.defaultPaymentMode}
+                    onValueChange={(value) =>
+                      handleInputChange("defaultPaymentMode", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select payment mode" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CASH">💵 Cash</SelectItem>
+                      <SelectItem value="ONLINE">🏦 Online Banking</SelectItem>
+                      <SelectItem value="UPI">📱 UPI</SelectItem>
+                      <SelectItem value="CHEQUE">📄 Cheque</SelectItem>
+                      <SelectItem value="CARD">💳 Card</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* KYC Information (Optional) */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground border-b pb-2 flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  KYC Information
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (Verification - optional)
+                  </span>
+                </h3>
+
+                <div className="space-y-2">
+                  <Label htmlFor="kycStatus">KYC Status</Label>
+                  <Select
+                    value={formData.kycStatus}
+                    onValueChange={(value) =>
+                      handleInputChange("kycStatus", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select KYC status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NOT_VERIFIED">
+                        ⭕ Not Verified
+                      </SelectItem>
+                      <SelectItem value="PENDING">🟡 Pending</SelectItem>
+                      <SelectItem value="VERIFIED">🟢 Verified</SelectItem>
+                      <SelectItem value="REJECTED">🔴 Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="kycDocumentType">Document Type</Label>
+                  <Select
+                    value={formData.kycDocumentType}
+                    onValueChange={(value) =>
+                      handleInputChange("kycDocumentType", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select document" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PAN">PAN Card</SelectItem>
+                      <SelectItem value="AADHAAR">Aadhaar Card</SelectItem>
+                      <SelectItem value="PASSPORT">Passport</SelectItem>
+                      <SelectItem value="DRIVING_LICENSE">
+                        Driving License
+                      </SelectItem>
+                      <SelectItem value="VOTER_ID">Voter ID</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {formData.kycDocumentType && (
+                  <div className="space-y-2">
+                    <Label htmlFor="kycDocumentNumber">
+                      {formData.kycDocumentType === "PAN" && "PAN Number"}
+                      {formData.kycDocumentType === "AADHAAR" &&
+                        "Aadhaar Number"}
+                      {formData.kycDocumentType === "PASSPORT" &&
+                        "Passport Number"}
+                      {formData.kycDocumentType === "DRIVING_LICENSE" &&
+                        "DL Number"}
+                      {formData.kycDocumentType === "VOTER_ID" &&
+                        "Voter ID Number"}
+                    </Label>
+                    <Input
+                      id="kycDocumentNumber"
+                      value={formData.kycDocumentNumber}
+                      onChange={(e) =>
+                        handleInputChange("kycDocumentNumber", e.target.value)
+                      }
+                      className="rounded-lg"
+                      placeholder={
+                        formData.kycDocumentType === "PAN"
+                          ? "e.g., ABCDE1234F"
+                          : formData.kycDocumentType === "AADHAAR"
+                          ? "e.g., 1234 5678 9012"
+                          : "Enter document number"
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
             {/* Address Information */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-foreground border-b pb-2">
-                Address Information
+                Billing Address
+                <span className="text-xs text-muted-foreground ml-2">
+                  (address to send the invoice)
+                </span>
               </h3>
 
               <div className="space-y-2">
@@ -585,8 +803,13 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="station">Station</Label>
+                {/* <div className="space-y-2">
+                  <Label htmlFor="station">
+                    Station
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (Nearest delivery station)
+                    </span>
+                  </Label>
                   <Input
                     id="station"
                     value={formData.station}
@@ -595,7 +818,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                     }
                     className="rounded-lg"
                   />
-                </div>
+                </div> */}
 
                 <div className="space-y-2">
                   <Label htmlFor="pincode">Pincode *</Label>
@@ -612,16 +835,19 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
               </div>
             </div>
 
-            {/* Receiver Details */}
+            {/* Receiver Details - IMPORTANT FOR DELIVERY */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-foreground">
                   Receiver Details
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (who will receive the courier)
+                  </span>
                 </h3>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <Label htmlFor="hasReceiver" className="text-sm">
-                      Has Receiver
+                      Multiple Receivers?
                     </Label>
                     <Switch
                       id="hasReceiver"
@@ -644,6 +870,16 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                   )}
                 </div>
               </div>
+
+              {!formData.hasReceiver && (
+                <div className="rounded-xl border border-border/60 p-4 bg-muted/30">
+                  <div className="text-sm text-muted-foreground mb-4">
+                    📝 <strong>Note:</strong> By default, customer himself is
+                    the receiver. Enable "Multiple Receivers" if customer sends
+                    to different people.
+                  </div>
+                </div>
+              )}
 
               {formData.hasReceiver && formData.receivers.length > 0 && (
                 <div className="space-y-4">
@@ -749,7 +985,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                             placeholder={
                               !receiver.pincode
                                 ? "Please enter pincode first"
-                                : "Enter address"
+                                : "Enter delivery address"
                             }
                           />
                         </div>
@@ -771,16 +1007,19 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
               )}
             </div>
 
-            {/* Pickup Locations */}
+            {/* Pickup Locations - IMPORTANT FOR COURIER PICKUP */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-foreground">
                   Pickup Locations
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (pickup location of the courier)
+                  </span>
                 </h3>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2">
                     <Label htmlFor="usePickupLocation" className="text-sm">
-                      Use Pickup Location
+                      Multiple Pickup Locations?
                     </Label>
                     <Switch
                       id="usePickupLocation"
@@ -803,6 +1042,16 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                   )}
                 </div>
               </div>
+
+              {!formData.usePickupLocation && (
+                <div className="rounded-xl border border-border/60 p-4 bg-muted/30">
+                  <div className="text-sm text-muted-foreground">
+                    📦 <strong>Note:</strong> By default, billing address will
+                    be used for pickup. Enable if customer has multiple pickup
+                    locations.
+                  </div>
+                </div>
+              )}
 
               {formData.usePickupLocation &&
                 formData.pickupLocations.length > 0 && (
@@ -840,6 +1089,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                               }
                               required
                               className="rounded-lg"
+                              placeholder="e.g., Main Office, Warehouse, Branch"
                             />
                           </div>
                           <div className="space-y-2">
@@ -925,7 +1175,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                               placeholder={
                                 !location.pincode
                                   ? "Please enter pincode first"
-                                  : "Enter address"
+                                  : "Enter pickup address"
                               }
                             />
                           </div>
@@ -951,152 +1201,71 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                 )}
             </div>
 
-            {/* Business Settings */}
+            {/* Category & Status */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* <div className="space-y-4">
-                <h3 className="text-sm font-semibold text-foreground border-b pb-2">
-                  Business Settings
-                </h3>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="paymentMode">Payment Mode</Label>
-                    <Select
-                      value={formData.paymentMode}
-                      onValueChange={(value) =>
-                        handleInputChange("paymentMode", value)
-                      }
-                    >
-                      <SelectTrigger className="rounded-lg">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Cash">Cash</SelectItem>
-                        <SelectItem value="Credit">Credit</SelectItem>
-                        <SelectItem value="Online">Online</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="accountGroup">Account Group</Label>
-                    <Select
-                      value={formData.accountGroup}
-                      onValueChange={(value) =>
-                        handleInputChange("accountGroup", value)
-                      }
-                    >
-                      <SelectTrigger className="rounded-lg">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="General">General</SelectItem>
-                        <SelectItem value="Corporate">Corporate</SelectItem>
-                        <SelectItem value="SME">SME</SelectItem>
-                        <SelectItem value="Enterprise">Enterprise</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="quotationType">Quotation Type</Label>
-                    <Select
-                      value={formData.quotationType}
-                      onValueChange={(value) =>
-                        handleInputChange("quotationType", value)
-                      }
-                    >
-                      <SelectTrigger className="rounded-lg">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Standard">Standard</SelectItem>
-                        <SelectItem value="Premium">Premium</SelectItem>
-                        <SelectItem value="Economy">Economy</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="awt">AWT</Label>
-                    <Input
-                      id="awt"
-                      type="number"
-                      step="0.001"
-                      value={formData.awt}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "awt",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="rounded-lg"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fuelCharges">Fuel Charges (%)</Label>
-                    <Input
-                      id="fuelCharges"
-                      type="number"
-                      step="0.01"
-                      value={formData.fuelCharges}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "fuelCharges",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="rounded-lg"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="fovCharges">FOV Charges (%)</Label>
-                    <Input
-                      id="fovCharges"
-                      type="number"
-                      step="0.01"
-                      value={formData.fovCharges}
-                      onChange={(e) =>
-                        handleInputChange(
-                          "fovCharges",
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      className="rounded-lg"
-                    />
-                  </div>
-                </div>
-              </div> */}
-
-              {/* Additional Settings */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-foreground border-b pb-2">
-                  Additional Settings
+                  Customer Type
                 </h3>
 
-                <div className="space-y-3">
-                  {/* <div className="flex items-center justify-between">
-                    <Label htmlFor="isInterStateDealer" className="text-sm">
-                      Inter-State Dealer
-                    </Label>
-                    <Switch
-                      id="isInterStateDealer"
-                      checked={formData.isInterStateDealer}
-                      onCheckedChange={(checked) =>
-                        handleInputChange("isInterStateDealer", checked)
-                      }
-                    />
-                  </div> */}
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select
+                    value={formData.category}
+                    onValueChange={(value) =>
+                      handleInputChange("category", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="CUSTOMER">
+                        👤 Regular Customer
+                      </SelectItem>
+                      <SelectItem value="CORPORATE">🏢 Corporate</SelectItem>
+                      <SelectItem value="E_COMMERCE">
+                        🛒 E-commerce Seller
+                      </SelectItem>
+                      <SelectItem value="RETAIL">🏪 Retail Shop</SelectItem>
+                      <SelectItem value="INDIVIDUAL">👨‍💼 Individual</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="documentNo">Document No</Label>
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(value: "active" | "inactive") =>
+                      handleInputChange("status", value)
+                    }
+                  >
+                    <SelectTrigger className="rounded-lg">
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">✅ Active</SelectItem>
+                      <SelectItem value="inactive">⛔ Inactive</SelectItem>
+                      <SelectItem value="BLOCKED">🚫 Blocked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Document No (Optional - for internal reference) */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground border-b pb-2">
+                  Internal Reference
+                </h3>
+
+                <div className="space-y-2">
+                  <Label htmlFor="documentNo">
+                    Document No
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (Optional - for your internal reference)
+                    </span>
+                  </Label>
                   <Input
                     id="documentNo"
                     value={formData.documentNo}
@@ -1104,11 +1273,12 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                       handleInputChange("documentNo", e.target.value)
                     }
                     className="rounded-lg"
+                    placeholder="e.g., DOC-2024-001"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="bookedBy">Booked By</Label>
+                  <Label htmlFor="bookedBy">Registered By</Label>
                   <Input
                     id="bookedBy"
                     value={formData.bookedBy}
@@ -1116,6 +1286,7 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                       handleInputChange("bookedBy", e.target.value)
                     }
                     className="rounded-lg"
+                    placeholder="Who registered this customer"
                   />
                 </div>
               </div>
@@ -1123,13 +1294,18 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
 
             {/* Remarks */}
             <div className="space-y-2">
-              <Label htmlFor="remark">Remarks</Label>
+              <Label htmlFor="remark">
+                Remarks / Notes
+                <span className="text-xs text-muted-foreground ml-2">
+                  (Any special instructions)
+                </span>
+              </Label>
               <Textarea
                 id="remark"
                 value={formData.remark}
                 onChange={(e) => handleInputChange("remark", e.target.value)}
                 className="rounded-lg min-h-[80px]"
-                placeholder="Additional notes or comments..."
+                placeholder="e.g., Special delivery instructions, preferred time for pickup, etc."
               />
             </div>
 

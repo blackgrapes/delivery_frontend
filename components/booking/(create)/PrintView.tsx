@@ -166,7 +166,7 @@ const PrintView = ({ formData, bookingNumber }: PrintViewProps) => {
               <strong>Contents:</strong> {formData.contents || "NON DOX"}
             </p>
             <p>
-              <strong>Pay Mode:</strong> {formData.payMode}
+              <strong>Pay Mode:</strong> {formData.paymentMode}
             </p>
           </div>
           <div className="space-y-1">
@@ -183,7 +183,7 @@ const PrintView = ({ formData, bookingNumber }: PrintViewProps) => {
               <strong>Weight:</strong> {formData.weight || "0.00"} kg
             </p>
             <p>
-              <strong>Charge Wt.:</strong> {formData.chargeWeight || "0.00"} kg
+              <strong>Charge Wt.:</strong> {formData.chargeableWeight || "0.00"} kg
             </p>
             <p>
               <strong>Rate:</strong> ₹{formData.rate || "0.00"}
@@ -241,7 +241,7 @@ const PrintView = ({ formData, bookingNumber }: PrintViewProps) => {
           <p>
             <strong>Tax</strong>
           </p>
-          <p>₹{formData.tax || "0.00"}</p>
+          <p>₹{formData.taxAmount || "0.00"}</p>
         </div>
         <div>
           <p>

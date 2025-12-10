@@ -1,3 +1,24 @@
+ab cheack kro frontend backend thik se kam kr rha hai ya nhi, matlb puri website ek ek chize kam kr rahi ya nhi, or abhi to ye error aa rhi hai
+
+[plugin:vite:react-swc] × Expected '</', got 'jsx text (
+  │             )'
+     ╭─[C:/Users/Admin/Downloads/water-supply/client/pages/Profile.tsx:258:1]
+ 255 │                 <CardHeader>
+ 256 │                   <RefreshCw className="h-4 w-4" />
+ 257 │                   Generate New Avatar
+ 258 │ ╭─▶             </Button>
+ 259 │ ╰─▶             <p className="text-xs text-muted-foreground mt-2">
+ 260 │                   Click to generate a new random avatar
+ 261 │                 </p>
+ 261 │             </div>
+     ╰────
+
+
+Caused by:
+    Syntax Error
+C:/Users/Admin/Downloads/water-supply/client/pages/Profile.tsx
+Click outside, press Esc key, or fix the code to dismiss.
+You can also disable this overlay by setting server.hmr.overlay to false in vite.config.ts.
 📦delivery_f
  ┣ 📂.git
  ┃ ┣ 📂hooks

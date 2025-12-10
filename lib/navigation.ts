@@ -341,6 +341,7 @@ function getSuperAdminNavigation(): NavigationItem[] {
         { title: "Customer Master", href: "/dashboard/master/customers" },
         { title: "Location Master", href: "/dashboard/master/locations" },
         { title: "Pincode Serviceability", href: "/dashboard/master/pincodes" },
+        { title: "Rates", href: "/dashboard/master/rates" },
         { title: "Product & Services", href: "/dashboard/master/products" },
         { title: "System Configuration", href: "/dashboard/master/config" },
       ],
