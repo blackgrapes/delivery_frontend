@@ -63,9 +63,9 @@ const ProductsManagement = () => {
       products.map((product) =>
         product.id === productId
           ? {
-              ...product,
-              status: product.status === "active" ? "inactive" : "active",
-            }
+            ...product,
+            status: product.status === "active" ? "inactive" : "active",
+          }
           : product
       )
     );
@@ -123,7 +123,7 @@ const ProductsManagement = () => {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-2 p-1">
       <ProductsHeader
         onAddProduct={handleAddProduct}
         onBulkUpload={() => setShowBulkUpload(true)}

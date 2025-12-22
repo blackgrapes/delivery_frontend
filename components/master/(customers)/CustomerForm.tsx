@@ -101,7 +101,19 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
     kycStatus: "NOT_VERIFIED",
     kycDocumentType: "",
     kycDocumentNumber: "",
-    // SIMPLIFIED - Sirf important fields
+    paymentTerms: "Net 30",
+    contractId: "",
+    customerType: "REGULAR",
+    registrationSource: "ADMIN",
+    // Portal & Logistics
+    portalAccess: false,
+    portalEmail: "",
+    portalPassword: "",
+    allowedServices: [],
+    serviceableZones: [],
+    apiAccess: false,
+    apiKey: "",
+    webhookUrl: "",
   });
 
   const [gstSearch, setGstSearch] = useState("");
@@ -151,6 +163,19 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
         kycStatus: customer.kycStatus || "NOT_VERIFIED",
         kycDocumentType: customer.kycDocumentType || "",
         kycDocumentNumber: customer.kycDocumentNumber || "",
+        paymentTerms: customer.paymentTerms || "Net 30",
+        contractId: customer.contractId || "",
+        customerType: customer.customerType || "REGULAR",
+        registrationSource: customer.registrationSource || "ADMIN",
+        // Portal & Logistics
+        portalAccess: customer.portalAccess || false,
+        portalEmail: customer.portalEmail || customer.email || "",
+        allowedServices: customer.allowedServices || [],
+        serviceableZones: customer.serviceableZones || [],
+        apiAccess: customer.apiAccess || false,
+        apiKey: customer.apiKey || "",
+        webhookUrl: customer.webhookUrl || "",
+        portalPassword: "", // Reset password on edit
       });
       if (customer.gstin) {
         setGstSearch(customer.gstin);
@@ -642,6 +667,42 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                   </>
                 )}
 
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="paymentTerms">Payment Terms</Label>
+                    <Select
+                      value={formData.paymentTerms}
+                      onValueChange={(value: any) =>
+                        handleInputChange("paymentTerms", value)
+                      }
+                    >
+                      <SelectTrigger className="rounded-lg">
+                        <SelectValue placeholder="Select terms" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Immediate">Immediate</SelectItem>
+                        <SelectItem value="Net 15">Net 15 Days</SelectItem>
+                        <SelectItem value="Net 30">Net 30 Days</SelectItem>
+                        <SelectItem value="Net 45">Net 45 Days</SelectItem>
+                        <SelectItem value="Net 60">Net 60 Days</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="contractId">Contract ID</Label>
+                    <Input
+                      id="contractId"
+                      value={formData.contractId}
+                      onChange={(e) =>
+                        handleInputChange("contractId", e.target.value)
+                      }
+                      className="rounded-lg"
+                      placeholder="e.g. CTR-2024-001"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="defaultPaymentMode">
                     Default Payment Mode
@@ -748,12 +809,160 @@ const CustomerForm = ({ customer, onSave, onCancel }: CustomerFormProps) => {
                         formData.kycDocumentType === "PAN"
                           ? "e.g., ABCDE1234F"
                           : formData.kycDocumentType === "AADHAAR"
-                          ? "e.g., 1234 5678 9012"
-                          : "Enter document number"
+                            ? "e.g., 1234 5678 9012"
+                            : "Enter document number"
                       }
                     />
                   </div>
                 )}
+              </div>
+            </div>
+
+            {/* Portal & Logistics Configuration */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground border-b pb-2 flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Portal Access
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (Self-service)
+                  </span>
+                </h3>
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between rounded-lg border border-border p-3 bg-muted/30">
+                    <div className="space-y-0.5">
+                      <Label className="text-base">Enable Portal Access</Label>
+                      <div className="text-xs text-muted-foreground">
+                        Allow customer to login and book shipments
+                      </div>
+                    </div>
+                    <Switch
+                      checked={formData.portalAccess}
+                      onCheckedChange={(checked) =>
+                        handleInputChange("portalAccess", checked)
+                      }
+                    />
+                  </div>
+
+                  {formData.portalAccess && (
+                    <div className="space-y-4 p-4 border border-border rounded-lg bg-card/50 animate-in fade-in slide-in-from-top-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="portalEmail">Portal Email (Username)</Label>
+                        <Input
+                          id="portalEmail"
+                          value={formData.portalEmail}
+                          onChange={(e) =>
+                            handleInputChange("portalEmail", e.target.value)
+                          }
+                          placeholder="e.g. customer@example.com"
+                          className="rounded-lg"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="portalPassword">
+                          Set Password
+                          <span className="text-xs text-muted-foreground ml-2">
+                            (Leave empty to keep existing)
+                          </span>
+                        </Label>
+                        <Input
+                          id="portalPassword"
+                          type="password"
+                          value={formData.portalPassword || ""}
+                          onChange={(e) =>
+                            handleInputChange("portalPassword", e.target.value)
+                          }
+                          className="rounded-lg"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground border-b pb-2 flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Logistics Configuration
+                  <span className="text-xs text-muted-foreground ml-2">
+                    (Service controls)
+                  </span>
+                </h3>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Allowed Services</Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {["Air Express", "Surface Standard", "Hyperlocal", "International"].map((service) => (
+                        <div
+                          key={service}
+                          className={`
+                            cursor-pointer rounded-lg border p-3 flex items-center justify-between transition-all
+                            ${formData.allowedServices?.includes(service)
+                              ? "bg-primary/10 border-primary text-primary"
+                              : "bg-background border-border hover:bg-muted"
+                            }
+                          `}
+                          onClick={() => {
+                            const current = formData.allowedServices || [];
+                            const updated = current.includes(service)
+                              ? current.filter(s => s !== service)
+                              : [...current, service];
+                            handleInputChange("allowedServices", updated);
+                          }}
+                        >
+                          <span className="text-sm font-medium">{service}</span>
+                          {formData.allowedServices?.includes(service) && (
+                            <CheckCircle2 className="h-4 w-4" />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Serviceable Zones</Label>
+                    <Select
+                      value={""}
+                      onValueChange={(value) => {
+                        const current = formData.serviceableZones || [];
+                        if (!current.includes(value)) {
+                          handleInputChange("serviceableZones", [...current, value]);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="rounded-lg">
+                        <SelectValue placeholder="Add Zones..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["North", "South", "East", "West", "Central", "North-East"].map(zone => (
+                          <SelectItem key={zone} value={zone}>{zone}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.serviceableZones?.map((zone) => (
+                        <Badge key={zone} variant="secondary" className="rounded-full pl-2 pr-1 py-1 flex items-center gap-1">
+                          {zone}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleInputChange(
+                                "serviceableZones",
+                                formData.serviceableZones.filter((z) => z !== zone)
+                              );
+                            }}
+                            className="hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 

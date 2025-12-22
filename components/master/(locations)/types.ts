@@ -35,10 +35,13 @@ export interface Location {
   securityLevel: "high" | "medium" | "low";
   createdAt: string;
   updatedAt: string;
+  parentHubId?: string; // For hierarchy (Hub -> Branch)
+  ownershipType?: "COCO" | "FOFO"; // Company Owned or Franchise Owned
 }
 
 export interface LocationFormData {
   name: string;
+  code: string;
   type: "hub" | "warehouse" | "counter" | "office" | "processing_center";
   address: string;
   city: string;
@@ -69,4 +72,6 @@ export interface LocationFormData {
   securityLevel: "high" | "medium" | "low";
   lastAudit: string;
   nextAudit: string;
+  parentHubId?: string;
+  ownershipType?: "COCO" | "FOFO";
 }

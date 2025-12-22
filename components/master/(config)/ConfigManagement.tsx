@@ -155,7 +155,7 @@ const ConfigManagement = () => {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-2 p-1">
       <ConfigHeader onExport={handleExport} onImport={handleImport} />
 
       <ConfigStats />

@@ -59,7 +59,7 @@ const ProductsList = ({
         <div className="space-y-4">
           {products.map((product) => (
             <Card key={product.id} className="rounded-xl border-border/70">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4 flex-1">
                     <div className="rounded-xl bg-primary/10 p-3">
@@ -157,29 +157,29 @@ const ProductsList = ({
 
                         {(product.specialHandling ||
                           product.storageRequirements) && (
-                          <div className="space-y-1">
-                            {product.specialHandling && (
-                              <div className="text-sm">
-                                <span className="text-muted-foreground">
-                                  Handling:{" "}
-                                </span>
-                                <span className="font-medium">
-                                  {product.specialHandling}
-                                </span>
-                              </div>
-                            )}
-                            {product.storageRequirements && (
-                              <div className="text-sm">
-                                <span className="text-muted-foreground">
-                                  Storage:{" "}
-                                </span>
-                                <span className="font-medium">
-                                  {product.storageRequirements}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        )}
+                            <div className="space-y-1">
+                              {product.specialHandling && (
+                                <div className="text-sm">
+                                  <span className="text-muted-foreground">
+                                    Handling:{" "}
+                                  </span>
+                                  <span className="font-medium">
+                                    {product.specialHandling}
+                                  </span>
+                                </div>
+                              )}
+                              {product.storageRequirements && (
+                                <div className="text-sm">
+                                  <span className="text-muted-foreground">
+                                    Storage:{" "}
+                                  </span>
+                                  <span className="font-medium">
+                                    {product.storageRequirements}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          )}
                       </div>
 
                       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
@@ -209,11 +209,10 @@ const ProductsList = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`gap-2 rounded-lg ${
-                        product.status === "active"
-                          ? "text-orange-600 border-orange-500 hover:bg-orange-50"
-                          : "text-green-600 border-green-500 hover:bg-green-50"
-                      }`}
+                      className={`gap-2 rounded-lg ${product.status === "active"
+                        ? "text-orange-600 border-orange-500 hover:bg-orange-50"
+                        : "text-green-600 border-green-500 hover:bg-green-50"
+                        }`}
                       onClick={() => onToggleStatus(product.id)}
                     >
                       {product.status === "active" ? (

@@ -38,6 +38,7 @@ interface LocationFormProps {
 const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
   const [formData, setFormData] = useState<LocationFormData>({
     name: "",
+    code: "",
     type: "hub",
     address: "",
     city: "",
@@ -67,9 +68,9 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
     isOperational: true,
     securityLevel: "medium",
     lastAudit: new Date().toISOString().split("T")[0],
-    nextAudit: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0],
+    nextAudit: new Date().toISOString().split("T")[0],
+    ownershipType: "COCO",
+    parentHubId: "",
   });
 
   const [newFacility, setNewFacility] = useState("");
@@ -79,6 +80,7 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
     if (location) {
       setFormData({
         name: location.name,
+        code: location.code,
         type: location.type,
         address: location.address,
         city: location.city,
@@ -98,6 +100,8 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
         securityLevel: location.securityLevel,
         lastAudit: location.lastAudit,
         nextAudit: location.nextAudit,
+        ownershipType: location.ownershipType || "COCO",
+        parentHubId: location.parentHubId || "",
       });
     }
   }, [location]);
@@ -212,15 +216,28 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
                   Basic Information
                 </h3>
 
-                <div className="space-y-2">
-                  <Label htmlFor="name">Location Name *</Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    required
-                    className="rounded-lg"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Location Name *</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      required
+                      className="rounded-lg"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="code">Location Code *</Label>
+                    <Input
+                      id="code"
+                      value={formData.code}
+                      onChange={(e) => handleInputChange("code", e.target.value)}
+                      required
+                      className="rounded-lg"
+                      placeholder="e.g. HUB-DEL-01"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -267,6 +284,39 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="ownershipType">Ownership Type</Label>
+                    <Select
+                      value={formData.ownershipType}
+                      onValueChange={(value: any) =>
+                        handleInputChange("ownershipType", value)
+                      }
+                    >
+                      <SelectTrigger className="rounded-lg">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="COCO">COCO (Company Owned)</SelectItem>
+                        <SelectItem value="FOFO">FOFO (Franchise Owned)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parentHubId">Parent Hub ID (Optional)</Label>
+                    <Input
+                      id="parentHubId"
+                      value={formData.parentHubId || ""}
+                      onChange={(e) =>
+                        handleInputChange("parentHubId", e.target.value)
+                      }
+                      className="rounded-lg"
+                      placeholder="e.g. HUB-001"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -535,8 +585,8 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
                           const updatedDays =
                             formData.operatingHours.workingDays.includes(day)
                               ? formData.operatingHours.workingDays.filter(
-                                  (d) => d !== day
-                                )
+                                (d) => d !== day
+                              )
                               : [...formData.operatingHours.workingDays, day];
                           handleOperatingHoursChange(
                             "workingDays",

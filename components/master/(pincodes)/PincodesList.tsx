@@ -95,6 +95,14 @@ const PincodesList = ({
                         </div>
                         <div>
                           <span className="text-muted-foreground">
+                            Zone:{" "}
+                          </span>
+                          <span className="font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs">
+                            {pincode.zone || "N/A"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">
                             Status:{" "}
                           </span>
                           <span className="font-medium capitalize">
@@ -140,11 +148,10 @@ const PincodesList = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`gap-2 rounded-lg flex-1 lg:flex-none ${
-                        pincode.status === "active"
+                      className={`gap-2 rounded-lg flex-1 lg:flex-none ${pincode.status === "active"
                           ? "text-orange-600 border-orange-500 hover:bg-orange-50"
                           : "text-green-600 border-green-500 hover:bg-green-50"
-                      }`}
+                        }`}
                       onClick={() => onToggleStatus(pincode.id)}
                     >
                       {pincode.status === "active" ? (

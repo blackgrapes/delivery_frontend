@@ -1,4 +1,3 @@
-// AuthenticatedHeader.tsx - Updated with menu functionality
 "use client";
 
 import Link from "next/link";
@@ -17,6 +16,8 @@ import {
   Shield,
   Truck,
   User,
+  ChevronRight,
+  ChevronDown
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -82,16 +83,20 @@ export function AuthenticatedHeader({ onMenuClick }: AuthenticatedHeaderProps) {
     return items;
   };
 
-  const navItems = getNavItems();
-
-  const currentPageLabel = useMemo(() => {
+  const breadcrumbs = useMemo(() => {
     const pathParts = pathname.split("/").filter(Boolean);
-    return pathParts[pathParts.length - 1]?.replace(/-/g, " ") || "Overview";
+    // Skip "dashboard" if it's the first part, or map it.
+    return pathParts.map((part, index) => {
+      const href = "/" + pathParts.slice(0, index + 1).join("/");
+      const label = part.replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
+      const isLast = index === pathParts.length - 1;
+      return { href, label, isLast };
+    });
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur-xl">
-      <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -102,120 +107,111 @@ export function AuthenticatedHeader({ onMenuClick }: AuthenticatedHeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <div className="flex flex-col lg:hidden">
-            <span className="text-base font-semibold text-foreground capitalize">
-              {currentPageLabel}
-            </span>
-            <span className="text-xs text-muted-foreground">Admin Panel</span>
-          </div>
+
+          {/* Breadcrumbs */}
+          <nav className="flex items-center text-sm font-medium text-muted-foreground">
+            <Link href="/dashboard" className="hover:text-foreground transition-colors hidden sm:block">Dashboard</Link>
+            {breadcrumbs.length > 0 && breadcrumbs[0].label !== "Dashboard" && (
+              <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground/50 hidden sm:block" />
+            )}
+
+            {breadcrumbs.map((crumb, idx) => {
+              if (crumb.label === "Dashboard") return null;
+              return (
+                <div key={crumb.href} className="flex items-center">
+                  {idx > 0 && <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground/50" />}
+                  {crumb.isLast ? (
+                    <span className="font-semibold text-foreground px-1 py-0.5 rounded-md bg-muted/50">
+                      {crumb.label}
+                    </span>
+                  ) : (
+                    <>
+                      <Link href={crumb.href} className="hover:text-foreground transition-colors hidden sm:block">
+                        {crumb.label}
+                      </Link>
+                      {/* On mobile, we usually only show the active page, or back button. 
+                                    For now keeping it simple: Show active on mobile, full trail on Desktop */}
+                      <span className="sm:hidden font-semibold text-foreground">
+                        {crumb.label}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )
+            })}
+          </nav>
         </div>
 
         <div className="ml-auto flex flex-1 items-center justify-end gap-2 lg:flex-none lg:justify-between">
-          <div className="relative hidden flex-1 items-center md:flex mr-4 max-w-xl">
-            <Search className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground" />
+          <div className="relative hidden lg:flex items-center mr-4 w-64 xl:w-80 group">
+            <Search className="pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <Input
-              placeholder="Search shipments, branches, partners, GST..."
-              className="h-11 rounded-lg border-border/80 pl-10 pr-24 text-sm shadow-inner w-full"
+              placeholder="Search..."
+              className="h-10 rounded-full border-border/50 bg-muted/50 pl-10 pr-12 text-sm shadow-none focus-visible:ring-1 focus-visible:bg-background transition-all"
             />
-            <div className="pointer-events-none absolute right-12 hidden items-center gap-1 text-xs font-medium text-muted-foreground xl:flex">
-              <kbd className="rounded-md bg-muted px-2 py-1">⌘</kbd>
-              <span>F</span>
+            <div className="pointer-events-none absolute right-3 flex items-center gap-1 text-[10px] font-medium text-muted-foreground border border-border/50 rounded px-1.5 py-0.5 bg-background/50">
+              <span className="text-xs">⌘</span>K
             </div>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="absolute right-1 top-1/2 hidden -translate-y-1/2 items-center gap-1 rounded-md border-border/70 px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground md:flex"
-            >
-              <SlidersHorizontal className="h-3.5 w-3.5" />
-              Filters
-            </Button>
           </div>
 
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               className="md:hidden"
               aria-label="Search"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-5 w-5" />
             </Button>
 
             <Button
               variant="ghost"
               size="icon"
-              className="relative"
+              className="relative rounded-full hover:bg-muted"
               aria-label="Notifications"
             >
               <Bell className="h-5 w-5" />
-              <Badge className="absolute -right-1 -top-1 border-0 bg-destructive px-1 py-0 text-[0.65rem] leading-none text-destructive-foreground">
-                12
-              </Badge>
+              <span className="absolute top-2.5 right-2.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-background" />
             </Button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  aria-label="Open workspace"
-                >
-                  <LayoutGrid className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-60">
-                <DropdownMenuLabel>Workspace Shortcuts</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Shipment Command Center</DropdownMenuItem>
-                <DropdownMenuItem>Branch Analytics Hub</DropdownMenuItem>
-                <DropdownMenuItem>GST Compliance Room</DropdownMenuItem>
-                <DropdownMenuItem>Partner Collaboration Desk</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             <div className="hidden items-center gap-2 xl:flex">
               <Button
-                variant="outline"
-                size="sm"
-                className="rounded-lg border-border/80"
-              >
-                <Plus className="h-4 w-4" />
-                Add Branch
-              </Button>
-              <Button
                 variant="default"
                 size="sm"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold shadow-brand hover:bg-primary/90"
+                className="rounded-full bg-primary px-4 h-9 text-sm font-medium shadow-lg shadow-primary/20 hover:bg-primary/90"
               >
-                Create Shipment
+                <Plus className="h-4 w-4 mr-2" />
+                New Order
               </Button>
             </div>
+
+            <div className="h-6 w-px bg-border/50 mx-1 hidden sm:block" />
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  className="flex items-center gap-3 rounded-full border border-border/70 bg-card/80 px-2 py-1 pr-3 text-left shadow-card hover:bg-card"
+                  className="flex items-center gap-2 rounded-full pl-1.5 pr-3 py-1 text-left hover:bg-muted/50 h-auto"
                   variant="ghost"
                 >
-                  <Avatar className="h-9 w-9">
+                  <Avatar className="h-8 w-8 border border-border/50">
                     <AvatarImage
                       src="https://i.pravatar.cc/100?img=12"
                       alt={session?.user.name || "User"}
                     />
                     <AvatarFallback>{userInitials}</AvatarFallback>
                   </Avatar>
-                  <div className="hidden text-left text-xs sm:block">
-                    <p className="text-sm font-semibold text-foreground">
+                  <div className="hidden md:flex flex-col gap-0.5">
+                    <p className="text-xs font-semibold text-foreground leading-none">
                       {session?.user.name}
                     </p>
-                    <p className="text-xs text-muted-foreground capitalize">
+                    <p className="text-[10px] text-muted-foreground capitalize leading-none">
                       {session?.user.role?.replace(/_/g, " ")}
                     </p>
                   </div>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground hidden md:block" />
                 </Button>
               </DropdownMenuTrigger>
-
               <DropdownMenuContent align="end" className="w-64">
                 <DropdownMenuLabel>Signed in as</DropdownMenuLabel>
                 <DropdownMenuItem className="flex items-center gap-2">

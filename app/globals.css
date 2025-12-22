@@ -78,6 +78,42 @@
     --input: 217 24% 28%;
     --ring: 199 95% 72%;
   }
+
+  /* Blue Theme */
+  .theme-blue {
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --ring: 221.2 83.2% 53.3%;
+  }
+  .dark .theme-blue {
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Green Theme */
+  .theme-green {
+    --primary: 142.1 76.2% 36.3%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --ring: 142.1 76.2% 36.3%;
+  }
+  .dark .theme-green {
+    --primary: 142.1 70.6% 45.3%;
+    --primary-foreground: 144.9 80.4% 10%;
+    --ring: 142.1 70.6% 45.3%;
+  }
+
+  /* Purple Theme */
+  .theme-purple {
+    --primary: 262.1 83.3% 57.8%;
+    --primary-foreground: 210 40% 98%;
+    --ring: 262.1 83.3% 57.8%;
+  }
+  .dark .theme-purple {
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 40% 98%;
+    --ring: 263.4 70% 50.4%;
+  }
 }
 
 @layer base {
@@ -93,6 +129,31 @@
     line-height: 1.5rem;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -moz-osx-font-smoothing: grayscale;
+    /* overflow: hidden; Removed to allow normal scrolling on public pages */
+  }
+
+  /* Custom Scrollbar Styling for Webkit to match Sidebar ScrollArea */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 9999px;
+    border: 2px solid transparent; /* Mimic padding/inset look */
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+    border: 2px solid transparent;
+    background-clip: content-box;
   }
 
   h1 {

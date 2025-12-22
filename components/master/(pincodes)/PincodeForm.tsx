@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Pincode, PincodeFormData } from "./types";
+import { zonesList } from "../(rates)/mockData";
 
 interface PincodeFormProps {
   pincode: Pincode | null;
@@ -46,6 +47,7 @@ const PincodeForm = ({ pincode, onSave, onCancel }: PincodeFormProps) => {
     hubAssigned: "",
     status: "active",
     specialInstructions: "",
+    zone: "",
   });
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const PincodeForm = ({ pincode, onSave, onCancel }: PincodeFormProps) => {
         hubAssigned: pincode.hubAssigned,
         status: pincode.status,
         specialInstructions: pincode.specialInstructions,
+        zone: pincode.zone || "",
       });
     }
   }, [pincode]);
@@ -182,6 +185,28 @@ const PincodeForm = ({ pincode, onSave, onCancel }: PincodeFormProps) => {
                     className="rounded-lg"
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="zone">Zone Assignment *</Label>
+                <Select
+                  value={formData.zone}
+                  onValueChange={(value) => handleInputChange("zone", value)}
+                >
+                  <SelectTrigger className="rounded-lg">
+                    <SelectValue placeholder="Select Zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {zonesList.map((zone) => (
+                      <SelectItem key={zone} value={zone}>
+                        {zone}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  Linked to Rate Rules for pricing calculation
+                </p>
               </div>
             </div>
 

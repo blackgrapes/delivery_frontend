@@ -9,7 +9,9 @@ import {
   BadgeCheck,
   XCircle,
   Users,
+  User,
   Truck,
+  Globe,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +44,7 @@ const CustomerList = ({
         <div className="space-y-4">
           {customers.map((customer) => (
             <Card key={customer.id} className="rounded-xl border-border/70">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4 flex-1">
                     <div className="rounded-xl bg-primary/10 p-3">
@@ -144,6 +146,36 @@ const CustomerList = ({
                               {customer.paymentMode}
                             </span>
                           </div>
+                          {customer.creditLimit && (
+                            <div>
+                              <span className="text-muted-foreground">
+                                Credit Limit:{" "}
+                              </span>
+                              <span className="font-medium">
+                                ₹{customer.creditLimit.toLocaleString()}
+                              </span>
+                            </div>
+                          )}
+                          {customer.paymentTerms && (
+                            <div>
+                              <span className="text-muted-foreground">
+                                Terms:{" "}
+                              </span>
+                              <span className="font-medium">
+                                {customer.paymentTerms}
+                              </span>
+                            </div>
+                          )}
+                          {customer.contractId && (
+                            <div className="col-span-1 md:col-span-2">
+                              <span className="text-muted-foreground">
+                                Contract ID:{" "}
+                              </span>
+                              <Badge variant="outline" className="font-mono text-xs">
+                                {customer.contractId}
+                              </Badge>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -231,6 +263,24 @@ const CustomerList = ({
 
                       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                         <span>Booked by: {customer.bookedBy}</span>
+                        {customer.registrationSource === "WEBSITE" && (
+                          <>
+                            <span>•</span>
+                            <div className="flex items-center gap-1 text-blue-600 font-medium">
+                              <Globe className="h-3 w-3" />
+                              Web User
+                            </div>
+                          </>
+                        )}
+                        {customer.portalAccess && (
+                          <>
+                            <span>•</span>
+                            <div className="flex items-center gap-1 text-primary font-medium">
+                              <User className="h-3 w-3" />
+                              Portal Active
+                            </div>
+                          </>
+                        )}
                         <span>•</span>
                         <span>Station: {customer.station}</span>
                         <span>•</span>

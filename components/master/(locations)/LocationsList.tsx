@@ -108,7 +108,7 @@ const LocationsList = ({
         <div className="space-y-4">
           {locations.map((location) => (
             <Card key={location.id} className="rounded-xl border-border/70">
-              <CardContent className="p-4">
+              <CardContent className="p-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4 flex-1">
                     <div className="rounded-xl bg-primary/10 p-3">
@@ -140,6 +140,20 @@ const LocationsList = ({
                               {getStatusIcon(location.status)}
                               {location.status.toUpperCase()}
                             </Badge>
+                            <Badge
+                              variant="outline"
+                              className="rounded-full text-xs"
+                            >
+                              {location.ownershipType || "COCO"}
+                            </Badge>
+                            {location.parentHubId && (
+                              <Badge
+                                variant="outline"
+                                className="rounded-full text-xs"
+                              >
+                                Parent: {location.parentHubId}
+                              </Badge>
+                            )}
                             {location.isOperational && (
                               <Badge
                                 variant="success"
@@ -287,11 +301,10 @@ const LocationsList = ({
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`gap-2 rounded-lg ${
-                        location.status === "active"
-                          ? "text-orange-600 border-orange-500 hover:bg-orange-50"
-                          : "text-green-600 border-green-500 hover:bg-green-50"
-                      }`}
+                      className={`gap-2 rounded-lg ${location.status === "active"
+                        ? "text-orange-600 border-orange-500 hover:bg-orange-50"
+                        : "text-green-600 border-green-500 hover:bg-green-50"
+                        }`}
                       onClick={() => onToggleStatus(location.id)}
                     >
                       {location.status === "active" ? (
@@ -332,7 +345,7 @@ const LocationsList = ({
           )}
         </div>
       </CardContent>
-    </Card>
+    </Card >
   );
 };
 

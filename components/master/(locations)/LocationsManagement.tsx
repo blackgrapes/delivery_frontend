@@ -42,7 +42,6 @@ const LocationsManagement = () => {
       // Add new location
       const newLocation: Location = {
         id: `LOC-${Date.now()}`,
-        code: `LOC${locations.length + 1}`,
         ...formData,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -62,9 +61,9 @@ const LocationsManagement = () => {
       locations.map((location) =>
         location.id === locationId
           ? {
-              ...location,
-              status: location.status === "active" ? "inactive" : "active",
-            }
+            ...location,
+            status: location.status === "active" ? "inactive" : "active",
+          }
           : location
       )
     );
@@ -86,7 +85,7 @@ const LocationsManagement = () => {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-2 p-1">
       <LocationsHeader
         onAddLocation={handleAddLocation}
         locationCount={locations.length}

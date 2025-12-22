@@ -3,7 +3,7 @@
 
 import { Suspense, useState } from "react";
 import { AuthenticatedHeader } from "@/components/layout/AuthenticatedHeader";
-import { AuthenticatedFooter } from "@/components/layout/AuthenticatedFooter";
+
 import { Sidebar } from "@/components/layout/Sidebar";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { ImpersonationBanner } from "@/components/admin/ImpersonationBanner";
@@ -16,22 +16,29 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <ErrorBoundary>
       <ProtectedRoute>
-        <div className="flex min-h-screen flex-col">
+        <div className="flex h-screen overflow-hidden flex-col">
           <ImpersonationBanner />
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-1 overflow-hidden relative">
             {/* Sidebar - Fixed from top to bottom, allowing internal scroll. */}
             <div
               className={`
-              fixed inset-y-0 left-0 z-50 w-64 transform bg-card/95 backdrop-blur-xl lg:static lg:translate-x-0 lg:w-64 lg:z-auto
+              fixed inset-y-0 left-0 z-50 transform bg-card/95 backdrop-blur-xl transition-all duration-300 ease-in-out
+              lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:z-0 lg:overflow-visible border-r border-border/60
               ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-              transition-transform duration-300 ease-in-out
+              ${isCollapsed ? "lg:w-[80px]" : "lg:w-64"}
+              w-64
             `}
             >
-              <Sidebar onClose={() => setSidebarOpen(false)} />
+              <Sidebar
+                onClose={() => setSidebarOpen(false)}
+                isCollapsed={isCollapsed}
+                toggleCollapse={() => setIsCollapsed(!isCollapsed)}
+              />
             </div>
 
             {/* Overlay for mobile */}
@@ -44,20 +51,20 @@ export default function DashboardLayout({
 
             {/* Main Content Area */}
             {/* h-full and flex-col ensures header/footer/main divide the vertical space */}
-            <div className="flex-1 flex flex-col min-w-0 lg:ml-0 w-full h-screen relative">
+            <div className="flex-1 flex flex-col min-w-0 lg:ml-0 h-full relative transition-all duration-300">
               <AuthenticatedHeader
                 onMenuClick={() => setSidebarOpen(!sidebarOpen)}
               />
 
               {/* main content scrolls independently and takes up space between header and footer */}
-              <main className="flex-1 overflow-y-auto pb-[56px]">
-                <div className="p-4 sm:p-6 md:p-8">
+              {/* main content scrolls independently and takes up space between header and footer */}
+              <main className="flex-1 overflow-y-auto pb-[20px] scrollbar-custom">
+                <div className="p-1 sm:p-2">
                   <Suspense fallback={<PageLoader />}>{children}</Suspense>
                 </div>
               </main>
 
-              {/* Footer is now fixed at the bottom via its own component styling */}
-              <AuthenticatedFooter />
+
             </div>
           </div>
         </div>

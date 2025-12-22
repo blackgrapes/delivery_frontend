@@ -340,6 +340,9 @@ function getSuperAdminNavigation(): NavigationItem[] {
       children: [
         { title: "Customer Master", href: "/dashboard/master/customers" },
         { title: "Location Master", href: "/dashboard/master/locations" },
+        { title: "Vehicle Master", href: "/dashboard/master/vehicles" },
+        { title: "Driver Master", href: "/dashboard/master/drivers" },
+        { title: "Route Master", href: "/dashboard/master/routes" },
         { title: "Pincode Serviceability", href: "/dashboard/master/pincodes" },
         { title: "Rates", href: "/dashboard/master/rates" },
         { title: "Product & Services", href: "/dashboard/master/products" },

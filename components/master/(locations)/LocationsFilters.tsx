@@ -30,7 +30,7 @@ const LocationsFilters = ({
 }: LocationsFiltersProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
-      <CardContent className="p-6">
+      <CardContent className="p-3">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
             <div className="relative flex-1 sm:w-80">

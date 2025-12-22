@@ -6,34 +6,33 @@ import { Truck } from "lucide-react";
 export function PublicFooter() {
   return (
     <footer className="border-t bg-muted/50">
-      <div className="container py-12">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div className="space-y-4">
             <Link href="/" className="flex items-center space-x-2">
-              <Truck className="h-6 w-6" />
-              <span className="text-xl font-bold">LogiFlow</span>
+              <Truck className="h-6 w-6 text-primary" />
+              <span className="text-xl font-bold">LogiFlow Express</span>
             </Link>
-            <p className="text-sm text-muted-foreground">
-              Enterprise logistics and delivery management system for modern
-              businesses.
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              India's most reliable logistics partner. Delivering happiness to over 29,000+ pincodes with speed, safety, and trust.
             </p>
           </div>
           <div>
-            <h3 className="mb-4 text-sm font-semibold">Product</h3>
+            <h3 className="mb-4 text-sm font-semibold">Services</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/#features" className="hover:text-foreground">
-                  Features
+                <Link href="/book" className="hover:text-primary transition-colors">
+                  Express Parcel
                 </Link>
               </li>
               <li>
-                <Link href="/#pricing" className="hover:text-foreground">
-                  Pricing
+                <Link href="/track" className="hover:text-primary transition-colors">
+                  Track Shipment
                 </Link>
               </li>
               <li>
-                <Link href="/#contact" className="hover:text-foreground">
-                  Contact
+                <Link href="/#coverage" className="hover:text-primary transition-colors">
+                  Network Coverage
                 </Link>
               </li>
             </ul>

@@ -62,9 +62,9 @@ const PincodesManagement = () => {
       pincodes.map((pincode) =>
         pincode.id === pincodeId
           ? {
-              ...pincode,
-              status: pincode.status === "active" ? "inactive" : "active",
-            }
+            ...pincode,
+            status: pincode.status === "active" ? "inactive" : "active",
+          }
           : pincode
       )
     );
@@ -77,6 +77,7 @@ const PincodesManagement = () => {
       pincode: item.pincode,
       city: item.city,
       state: item.state,
+      zone: item.zone || "Default",
       district: item.district,
       country: item.country || "India",
       serviceability: item.serviceability || "standard",

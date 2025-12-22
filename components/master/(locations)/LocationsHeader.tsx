@@ -14,7 +14,7 @@ const LocationsHeader = ({
   locationCount,
 }: LocationsHeaderProps) => {
   return (
-    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 border-b border-border/40 pb-1">
       <div className="space-y-2">
         <div className="flex items-center gap-3">
           <div className="rounded-2xl bg-blue-100 p-2">

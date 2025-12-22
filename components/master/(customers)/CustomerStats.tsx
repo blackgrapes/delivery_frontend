@@ -18,9 +18,9 @@ const CustomerStats = ({ customers }: CustomerStatsProps) => {
   ).length;
 
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-5">
+        <CardContent className="p-3">
           <div className="flex items-center justify-between">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">

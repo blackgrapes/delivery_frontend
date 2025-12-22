@@ -4,6 +4,7 @@ export interface Pincode {
   pincode: string;
   city: string;
   state: string;
+  zone: string;
   district: string;
   country: string;
   serviceability:
@@ -27,6 +28,7 @@ export interface PincodeFormData {
   pincode: string;
   city: string;
   state: string;
+  zone: string;
   district: string;
   country: string;
   serviceability:

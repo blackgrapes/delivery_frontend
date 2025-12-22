@@ -51,6 +51,8 @@ export const mockLocations: Location[] = [
     securityLevel: "high",
     createdAt: "2024-01-15T10:00:00Z",
     updatedAt: "2024-12-11T08:30:00Z",
+    parentHubId: undefined,
+    ownershipType: "COCO",
   },
   {
     id: "2",
