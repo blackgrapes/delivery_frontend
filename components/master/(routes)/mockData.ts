@@ -8,13 +8,36 @@ export const mockRoutes: Route[] = [
     destinationCity: "Delhi",
     sourceHub: "Mumbai Gateway",
     destinationHub: "Delhi Hub",
-    distanceKm: 1400,
-    transitTimeHours: 36,
-    stops: ["Surat Hub", "Jaipur Hub"],
+    totalDistanceKm: 1420,
+    totalTransitTimeHours: 36,
+    schedule: ["MON", "WED", "FRI"],
+    departureTime: "22:00",
+    stops: [
+      {
+        id: "S1",
+        hubId: "HB-SUR-01",
+        hubName: "Surat Hub",
+        sequence: 1,
+        distanceFromPrevKm: 280,
+        transitTimeFromPrevMins: 300, // 5 hours
+        haltTimeMins: 45
+      },
+      {
+        id: "S2",
+        hubId: "HB-JAI-01",
+        hubName: "Jaipur Hub",
+        sequence: 2,
+        distanceFromPrevKm: 850,
+        transitTimeFromPrevMins: 960, // 16 hours
+        haltTimeMins: 60
+      }
+    ],
     status: "ACTIVE",
     type: "LINEHAUL",
     isReturnRoute: true,
-    baseCost: 25000,
+    returnRouteId: "R001-RET",
+    baseCost: 28000,
+    vehicleTypeRequired: "32FT MXL"
   },
   {
     id: "R002",
@@ -23,13 +46,26 @@ export const mockRoutes: Route[] = [
     destinationCity: "Chennai",
     sourceHub: "Bangalore Hub",
     destinationHub: "Chennai Hub",
-    distanceKm: 350,
-    transitTimeHours: 8,
-    stops: ["Hosur"],
+    totalDistanceKm: 350,
+    totalTransitTimeHours: 8,
+    schedule: ["DAILY"],
+    departureTime: "21:00",
+    stops: [
+      {
+        id: "S1",
+        hubId: "HB-HOS-01",
+        hubName: "Hosur",
+        sequence: 1,
+        distanceFromPrevKm: 40,
+        transitTimeFromPrevMins: 90,
+        haltTimeMins: 30
+      }
+    ],
     status: "ACTIVE",
     type: "LINEHAUL",
     isReturnRoute: true,
     baseCost: 5000,
+    vehicleTypeRequired: "20FT SXL"
   },
   {
     id: "R003",
@@ -38,13 +74,16 @@ export const mockRoutes: Route[] = [
     destinationCity: "Pune",
     sourceHub: "Mumbai Gateway",
     destinationHub: "Pune Branch",
-    distanceKm: 150,
-    transitTimeHours: 4,
-    stops: ["Navi Mumbai"],
+    totalDistanceKm: 150,
+    totalTransitTimeHours: 4,
+    schedule: ["DAILY"],
+    departureTime: "06:00",
+    stops: [],
     status: "ACTIVE",
     type: "FEEDER",
     isReturnRoute: true,
     baseCost: 2000,
+    vehicleTypeRequired: "TATA 407"
   },
   {
     id: "R004",
@@ -53,27 +92,52 @@ export const mockRoutes: Route[] = [
     destinationCity: "Gurgaon",
     sourceHub: "Delhi Hub",
     destinationHub: "Gurgaon DC",
-    distanceKm: 40,
-    transitTimeHours: 2,
+    totalDistanceKm: 40,
+    totalTransitTimeHours: 2,
+    schedule: ["DAILY"],
+    departureTime: "08:00",
     stops: [],
     status: "ACTIVE",
     type: "LAST_MILE",
     isReturnRoute: false,
     baseCost: 500,
+    vehicleTypeRequired: "TATA ACE"
   },
   {
     id: "R005",
-    code: "KOL-BOM-L2",
-    sourceCity: "Kolkata",
-    destinationCity: "Mumbai",
-    sourceHub: "Kolkata Hub",
-    destinationHub: "Mumbai Gateway",
-    distanceKm: 2000,
-    transitTimeHours: 48,
-    stops: ["Nagpur Hub"],
-    status: "BLOCKED",
+    code: "HYD-BLR-EXP",
+    sourceCity: "Hyderabad",
+    destinationCity: "Bangalore",
+    sourceHub: "Hyderabad Gateway",
+    destinationHub: "Bangalore Hub",
+    totalDistanceKm: 570,
+    totalTransitTimeHours: 12,
+    schedule: ["TUE", "THU", "SAT"],
+    departureTime: "18:00",
+    stops: [
+       {
+        id: "S1",
+        hubId: "HB-KUR-01",
+        hubName: "Kurnool",
+        sequence: 1,
+        distanceFromPrevKm: 210,
+        transitTimeFromPrevMins: 240, 
+        haltTimeMins: 30
+      },
+      {
+        id: "S2",
+        hubId: "HB-ATP-01",
+        hubName: "Anantapur",
+        sequence: 2,
+        distanceFromPrevKm: 150,
+        transitTimeFromPrevMins: 180, 
+        haltTimeMins: 30
+      }
+    ],
+    status: "ACTIVE",
     type: "LINEHAUL",
-    isReturnRoute: false,
-    baseCost: 40000,
+    isReturnRoute: true,
+    baseCost: 12500,
+    vehicleTypeRequired: "32FT SXL"
   }
 ];

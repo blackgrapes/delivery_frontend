@@ -15,6 +15,12 @@ export const mockVehicles: Vehicle[] = [
     insuranceExpiry: "2024-12-31",
     fitnessExpiry: "2025-06-30",
     fuelType: "DIESEL",
+    ownershipType: "OWNED",
+    pollutionCertExpiry: "2024-06-30",
+    permitType: "NATIONAL",
+    gpsDeviceId: "GPS-001",
+    lastServiceDate: "2024-01-01",
+    nextServiceDue: "2024-07-01",
   },
   {
     id: "V002",
@@ -30,6 +36,10 @@ export const mockVehicles: Vehicle[] = [
     insuranceExpiry: "2024-10-15",
     fitnessExpiry: "2025-03-31",
     fuelType: "CNG",
+    ownershipType: "LEASED",
+    pollutionCertExpiry: "2024-09-30",
+    permitType: "STATE",
+    gpsDeviceId: "GPS-002",
   },
   {
     id: "V003",
@@ -43,6 +53,10 @@ export const mockVehicles: Vehicle[] = [
     insuranceExpiry: "2024-08-01",
     fitnessExpiry: "2024-12-01",
     fuelType: "DIESEL",
+    ownershipType: "OWNED",
+    pollutionCertExpiry: "2024-05-15",
+    permitType: "STATE",
+    lastServiceDate: "2024-02-15",
   },
   {
     id: "V004",
@@ -56,6 +70,9 @@ export const mockVehicles: Vehicle[] = [
     insuranceExpiry: "2025-01-20",
     fitnessExpiry: "2026-01-20",
     fuelType: "PETROL",
+    ownershipType: "OWNED",
+    pollutionCertExpiry: "2024-12-20",
+    permitType: "STATE",
   },
   {
     id: "V005",
@@ -69,5 +86,9 @@ export const mockVehicles: Vehicle[] = [
     insuranceExpiry: "2024-11-11",
     fitnessExpiry: "2025-11-11",
     fuelType: "DIESEL",
+    ownershipType: "MARKET",
+    pollutionCertExpiry: "2024-10-11",
+    permitType: "NATIONAL",
+    gpsDeviceId: "GPS-EXT-99",
   }
 ];

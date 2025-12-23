@@ -1,4 +1,4 @@
-import { Search, RefreshCw, Filter } from "lucide-react";
+import { Search, RotateCcw, Filter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -119,14 +119,9 @@ const RatesFilters = ({
                                     onStatusFilterChange("ALL");
                                 }}
                             >
-                                <RefreshCw className="h-4 w-4" />
+                                <RotateCcw className="h-4 w-4" />
                             </Button>
                         </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Filter className="h-4 w-4" />
-                        Showing {filteredCount} results based on applied filters
                     </div>
                 </div>
             </CardContent>

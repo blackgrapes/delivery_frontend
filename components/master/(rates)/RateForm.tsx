@@ -142,6 +142,8 @@ const RateForm = ({ onClose, initialData }: RateFormProps) => {
         description: "Fragile/Perishable items",
       },
     ],
+    vehicleType: initialData?.vehicleType || "",
+    volumetricDivisor: initialData?.volumetricDivisor || 5000,
     validFrom: initialData?.validFrom || new Date().toISOString().split("T")[0],
     validTo:
       initialData?.validTo ||
@@ -181,6 +183,8 @@ const RateForm = ({ onClose, initialData }: RateFormProps) => {
       codCharges: formData.codCharges!,
       minCharge: formData.minCharge!,
       additionalCharges: formData.additionalCharges || [],
+      vehicleType: formData.vehicleType,
+      volumetricDivisor: formData.volumetricDivisor,
       validFrom: formData.validFrom!,
       validTo: formData.validTo!,
       isActive: formData.isActive!,
@@ -360,6 +364,33 @@ const RateForm = ({ onClose, initialData }: RateFormProps) => {
                         <SelectItem value="EXPRESS">Express</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Vehicle Type (Optional)</Label>
+                    <Input
+                      value={formData.vehicleType}
+                      onChange={(e) =>
+                        setFormData({ ...formData, vehicleType: e.target.value })
+                      }
+                      placeholder="e.g. Tata Ace, 10FT"
+                    />
+                  </div>
+                  <div>
+                    <Label>Volumetric Divisor (CFT)</Label>
+                    <Input
+                      type="number"
+                      value={formData.volumetricDivisor}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          volumetricDivisor: parseFloat(e.target.value),
+                        })
+                      }
+                      placeholder="e.g. 5000"
+                    />
                   </div>
                 </div>
 

@@ -9,12 +9,25 @@ import {
   ShieldAlert,
   AlertTriangle,
   Thermometer,
-  Play,
-  Pause,
-  BadgeCheck,
-  XCircle,
+  MoreHorizontal,
+  Box,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Product } from "./types";
@@ -32,228 +45,168 @@ const ProductsList = ({
   onDeleteProduct,
   onToggleStatus,
 }: ProductsListProps) => {
-  const getStatusIcon = (status: string) => {
-    return status === "active" ? (
-      <BadgeCheck className="h-3 w-3" />
-    ) : (
-      <XCircle className="h-3 w-3" />
-    );
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "active":
+        return (
+          <Badge variant="outline" className="border-green-500/20 bg-green-500/5 text-green-600 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-none">
+            Active
+          </Badge>
+        );
+      case "inactive":
+        return (
+          <Badge variant="outline" className="border-red-500/20 bg-red-500/5 text-red-600 rounded-full px-2.5 py-0.5 text-xs font-semibold shadow-none">
+            Inactive
+          </Badge>
+        );
+      default:
+        return (
+          <Badge variant="outline" className="text-xs">
+            {status}
+          </Badge>
+        );
+    }
   };
 
-  const getStatusColor = (status: string) => {
-    return status === "active" ? "success" : "secondary";
-  };
+  if (products.length === 0) {
+    return (
+      <div className="flex min-h-[400px] flex-col items-center justify-center rounded-2xl border border-dashed border-border/60 bg-muted/10 p-8 text-center animate-in fade-in-50">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted/50 mb-4">
+          <Package className="h-8 w-8 text-muted-foreground/50" />
+        </div>
+        <h3 className="text-lg font-semibold text-foreground">No Products Found</h3>
+        <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+          Try adjusting your search filters or add a new product to your catalog.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Package className="h-5 w-5 text-primary" />
-          Products List
-          <Badge variant="secondary" className="rounded-full">
-            {products.length} products
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {products.map((product) => (
-            <Card key={product.id} className="rounded-xl border-border/70">
-              <CardContent className="p-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="rounded-xl bg-primary/10 p-3">
-                      <Package className="h-6 w-6 text-primary" />
-                    </div>
-
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <h3 className="font-semibold text-foreground">
-                            {product.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <code className="text-sm font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                              {product.sku}
-                            </code>
-                            <Badge
-                              variant="outline"
-                              className="rounded-full text-xs"
-                            >
-                              {product.category}
-                            </Badge>
-                            <Badge
-                              variant={getStatusColor(product.status) as any}
-                              className="rounded-full text-xs flex items-center gap-1"
-                            >
-                              {getStatusIcon(product.status)}
-                              {product.status.toUpperCase()}
-                            </Badge>
-                            {product.fragile && (
-                              <Badge
-                                variant="warning"
-                                className="rounded-full text-xs flex items-center gap-1"
-                              >
-                                <ShieldAlert className="h-3 w-3" />
-                                FRAGILE
-                              </Badge>
-                            )}
-                            {product.hazardous && (
-                              <Badge
-                                variant="error"
-                                className="rounded-full text-xs flex items-center gap-1"
-                              >
-                                <AlertTriangle className="h-3 w-3" />
-                                HAZARDOUS
-                              </Badge>
-                            )}
-                            {product.temperatureSensitive && (
-                              <Badge
-                                variant="info"
-                                className="rounded-full text-xs flex items-center gap-1"
-                              >
-                                <Thermometer className="h-3 w-3" />
-                                TEMP SENSITIVE
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
+    <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
+      <div className="overflow-x-auto">
+        <div className="min-w-[1200px]">
+          <Table>
+            <TableHeader className="bg-muted/30">
+              <TableRow className="hover:bg-transparent border-border/50">
+                <TableHead className="w-[300px] py-4 pl-6 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Product Details</TableHead>
+                <TableHead className="w-[200px] py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Specifications</TableHead>
+                <TableHead className="w-[150px] py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Value</TableHead>
+                <TableHead className="w-[250px] py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Handling & Storage</TableHead>
+                <TableHead className="w-[120px] py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Status</TableHead>
+                <TableHead className="w-[80px] py-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground text-right pr-6">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((product) => (
+                <TableRow key={product.id} className="group border-border/50 hover:bg-muted/30 transition-colors">
+                  <TableCell className="py-4 pl-6">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background shadow-sm">
+                        <Box className="h-4 w-4 text-muted-foreground" />
                       </div>
-
-                      <div className="space-y-2">
-                        <p className="text-sm text-muted-foreground">
-                          {product.description}
-                        </p>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                          <div className="flex items-center gap-2">
-                            <Weight className="h-4 w-4 text-muted-foreground" />
-                            <span>{product.weight} kg</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Ruler className="h-4 w-4 text-muted-foreground" />
-                            <span>{product.dimensions}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <IndianRupee className="h-4 w-4 text-muted-foreground" />
-                            <span>{product.value.toLocaleString()}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-muted-foreground">HSN:</span>
-                            <span className="font-mono">{product.hsnCode}</span>
-                          </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-foreground">{product.name}</span>
+                          <Badge variant="outline" className="px-1.5 py-0 text-[10px] h-4 rounded-sm border-border bg-muted text-muted-foreground">
+                            {product.sku}
+                          </Badge>
                         </div>
-
-                        {product.subCategory && (
-                          <div className="text-sm">
-                            <span className="text-muted-foreground">
-                              Sub-category:{" "}
-                            </span>
-                            <span className="font-medium">
-                              {product.subCategory}
-                            </span>
-                          </div>
-                        )}
-
-                        {(product.specialHandling ||
-                          product.storageRequirements) && (
-                            <div className="space-y-1">
-                              {product.specialHandling && (
-                                <div className="text-sm">
-                                  <span className="text-muted-foreground">
-                                    Handling:{" "}
-                                  </span>
-                                  <span className="font-medium">
-                                    {product.specialHandling}
-                                  </span>
-                                </div>
-                              )}
-                              {product.storageRequirements && (
-                                <div className="text-sm">
-                                  <span className="text-muted-foreground">
-                                    Storage:{" "}
-                                  </span>
-                                  <span className="font-medium">
-                                    {product.storageRequirements}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>{product.category}</span>
+                          {product.subCategory && (
+                            <>
+                              <span className="h-1 w-1 rounded-full bg-border" />
+                              <span>{product.subCategory}</span>
+                            </>
                           )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                        <span>
-                          Created:{" "}
-                          {new Date(product.createdAt).toLocaleDateString()}
-                        </span>
-                        <span>•</span>
-                        <span>
-                          Updated:{" "}
-                          {new Date(product.updatedAt).toLocaleDateString()}
-                        </span>
+                        </div>
+                        <div className="text-[10px] text-muted-foreground/70 font-mono">
+                          HSN: {product.hsnCode}
+                        </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 rounded-lg"
-                      onClick={() => onEditProduct(product)}
-                    >
-                      <Edit className="h-4 w-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={`gap-2 rounded-lg ${product.status === "active"
-                        ? "text-orange-600 border-orange-500 hover:bg-orange-50"
-                        : "text-green-600 border-green-500 hover:bg-green-50"
-                        }`}
-                      onClick={() => onToggleStatus(product.id)}
-                    >
-                      {product.status === "active" ? (
-                        <>
-                          <Pause className="h-4 w-4" />
-                          Deactivate
-                        </>
-                      ) : (
-                        <>
-                          <Play className="h-4 w-4" />
-                          Activate
-                        </>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Weight className="h-3.5 w-3.5" />
+                        <span className="font-medium text-foreground">{product.weight} kg</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Ruler className="h-3.5 w-3.5" />
+                        <span>{product.dimensions}</span>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-1 font-medium text-foreground">
+                      <IndianRupee className="h-3.5 w-3.5 text-muted-foreground" />
+                      {product.value.toLocaleString()}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {product.fragile && (
+                        <Badge variant="outline" className="h-5 px-1.5 text-[10px] font-medium border-orange-200 bg-orange-50 text-orange-700 gap-1">
+                          <ShieldAlert className="h-3 w-3" />
+                          Fragile
+                        </Badge>
                       )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => onDeleteProduct(product.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          {products.length === 0 && (
-            <div className="text-center py-12 border-2 border-dashed border-border rounded-xl bg-muted/30">
-              <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <p className="text-muted-foreground mb-2">No products found</p>
-              <p className="text-sm text-muted-foreground">
-                Try adjusting your search criteria or add a new product
-              </p>
-            </div>
-          )}
+                      {product.hazardous && (
+                        <Badge variant="outline" className="h-5 px-1.5 text-[10px] font-medium border-red-200 bg-red-50 text-red-700 gap-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          Hazmat
+                        </Badge>
+                      )}
+                      {product.temperatureSensitive && (
+                        <Badge variant="outline" className="h-5 px-1.5 text-[10px] font-medium border-blue-200 bg-blue-50 text-blue-700 gap-1">
+                          <Thermometer className="h-3 w-3" />
+                          Temp Ctrl
+                        </Badge>
+                      )}
+                      {!product.fragile && !product.hazardous && !product.temperatureSensitive && (
+                        <span className="text-xs text-muted-foreground italic">Standard Handling</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="py-4">
+                    {getStatusBadge(product.status)}
+                  </TableCell>
+                  <TableCell className="py-4 pr-6 text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-foreground">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 rounded-xl border-border/60 shadow-lg">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => onEditProduct(product)} className="gap-2 cursor-pointer">
+                          <Edit className="h-4 w-4 text-muted-foreground" />
+                          Edit Product
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onToggleStatus(product.id)} className="gap-2 cursor-pointer">
+                          <Package className="h-4 w-4 text-muted-foreground" />
+                          {product.status === "active" ? "Deactivate" : "Activate"}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => onDeleteProduct(product.id)} className="gap-2 text-red-600 focus:text-red-700 cursor-pointer">
+                          <Trash2 className="h-4 w-4" />
+                          Delete Product
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -13,6 +13,7 @@ import { mockPincodes } from "./mockData";
 
 const PincodesManagement = () => {
   const [pincodes, setPincodes] = useState<Pincode[]>(mockPincodes);
+  const [selectedPincodeIds, setSelectedPincodeIds] = useState<string[]>([]);
   const [selectedPincode, setSelectedPincode] = useState<Pincode | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
@@ -20,6 +21,21 @@ const PincodesManagement = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [serviceFilter, setServiceFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
+
+  const handleSelectId = (id: string) => {
+    setSelectedPincodeIds(prev =>
+      prev.includes(id) ? prev.filter(pId => pId !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = (ids: string[]) => {
+    setSelectedPincodeIds(ids);
+  };
+
+  const handleBulkDelete = () => {
+    setPincodes(prev => prev.filter(p => !selectedPincodeIds.includes(p.id)));
+    setSelectedPincodeIds([]);
+  };
 
   const handleAddPincode = () => {
     setSelectedPincode(null);
@@ -33,14 +49,12 @@ const PincodesManagement = () => {
 
   const handleSavePincode = (formData: PincodeFormData) => {
     if (selectedPincode) {
-      // Update existing pincode
       setPincodes(
         pincodes.map((p) =>
           p.id === selectedPincode.id ? { ...p, ...formData } : p
         )
       );
     } else {
-      // Add new pincode
       const newPincode: Pincode = {
         id: `PIN-${Date.now()}`,
         ...formData,
@@ -80,11 +94,22 @@ const PincodesManagement = () => {
       zone: item.zone || "Default",
       district: item.district,
       country: item.country || "India",
+
+      // Default new fields
+      isODA: item.isODA === 'true' || false,
+      odaType: item.odaType || "REGULAR",
+      embargoTags: item.embargoTags ? item.embargoTags.split(',') : [],
+      stateFormRequired: item.stateFormRequired === 'true' || false,
+      controllingBranchId: item.controllingBranchId || "",
+      serviceCategory: item.serviceCategory || "SELF",
+
       serviceability: item.serviceability || "standard",
       deliveryTime: item.deliveryTime || "2-3 days",
       codAvailable: item.codAvailable !== undefined ? item.codAvailable : true,
-      pickupAvailable:
-        item.pickupAvailable !== undefined ? item.pickupAvailable : true,
+      prepaidOnly: item.prepaidOnly === 'true' || false,
+      pickupAvailable: item.pickupAvailable !== undefined ? item.pickupAvailable : true,
+      reversePickupAvailable: item.reversePickupAvailable !== undefined ? item.reversePickupAvailable : true,
+
       lastMilePartner: item.lastMilePartner || "Local Partner",
       hubAssigned: item.hubAssigned || "Auto-assigned",
       status: "active",
@@ -114,7 +139,8 @@ const PincodesManagement = () => {
   });
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-7 p-6">
+      {/* ... Headers & Stats ... */}
       <PincodesHeader
         onAddPincode={handleAddPincode}
         onBulkUpload={() => setShowBulkUpload(true)}
@@ -137,21 +163,21 @@ const PincodesManagement = () => {
 
       <PincodesList
         pincodes={filteredPincodes}
+        selectedIds={selectedPincodeIds}
+        onSelectId={handleSelectId}
+        onSelectAll={handleSelectAll}
         onEditPincode={handleEditPincode}
         onDeletePincode={handleDeletePincode}
         onToggleStatus={handleToggleStatus}
+        onBulkDelete={handleBulkDelete}
       />
 
-      {showForm && (
-        <PincodeForm
-          pincode={selectedPincode}
-          onSave={handleSavePincode}
-          onCancel={() => {
-            setShowForm(false);
-            setSelectedPincode(null);
-          }}
-        />
-      )}
+      <PincodeForm
+        open={showForm}
+        onOpenChange={setShowForm}
+        onSave={handleSavePincode}
+        pincode={selectedPincode}
+      />
 
       {showBulkUpload && (
         <BulkUploadModal

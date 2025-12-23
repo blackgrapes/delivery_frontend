@@ -37,6 +37,7 @@ export interface Location {
   updatedAt: string;
   parentHubId?: string; // For hierarchy (Hub -> Branch)
   ownershipType?: "COCO" | "FOFO"; // Company Owned or Franchise Owned
+  gstin?: string;
 }
 
 export interface LocationFormData {
@@ -74,4 +75,5 @@ export interface LocationFormData {
   nextAudit: string;
   parentHubId?: string;
   ownershipType?: "COCO" | "FOFO";
+  gstin?: string;
 }

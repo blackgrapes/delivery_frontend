@@ -51,6 +51,15 @@ export function ThemeSwitcherInner() {
                 <DropdownMenuItem onClick={() => setTheme("dark")}>
                     Dark {theme === "dark" && <Check className="ml-auto h-4 w-4" />}
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("black")}>
+                    Black {theme === "black" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("navy")}>
+                    Navy {theme === "navy" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme("forest")}>
+                    Forest {theme === "forest" && <Check className="ml-auto h-4 w-4" />}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("system")}>
                     System {theme === "system" && <Check className="ml-auto h-4 w-4" />}
                 </DropdownMenuItem>

@@ -43,7 +43,10 @@
     --radius: 0.5rem;
   }
 
-  .dark {
+  .dark,
+  .black,
+  .navy,
+  .forest {
     --background: 222 47% 11%;
     --foreground: 210 40% 96%;
 
@@ -77,6 +80,95 @@
     --border: 217 24% 28%;
     --input: 217 24% 28%;
     --ring: 199 95% 72%;
+  }
+
+  .black {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 199 95% 72%;
+    --primary-foreground: 215 28% 17%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 63%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+  }
+
+  .navy {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 224 71% 7%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 224 71% 7%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 210 100% 50%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 222 47% 11%;
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 224 76% 48%;
+  }
+
+  .forest {
+    --background: 156 70% 3%;
+    --foreground: 156 10% 94%;
+
+    --card: 156 70% 5%;
+    --card-foreground: 156 10% 94%;
+
+    --popover: 156 70% 5%;
+    --popover-foreground: 156 10% 94%;
+
+    --primary: 156 80% 45%;
+    --primary-foreground: 156 10% 94%;
+
+    --secondary: 156 30% 12%;
+    --secondary-foreground: 156 10% 94%;
+
+    --muted: 156 30% 12%;
+    --muted-foreground: 156 10% 65%;
+
+    --accent: 156 30% 12%;
+    --accent-foreground: 156 10% 94%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 156 10% 94%;
+
+    --border: 156 30% 12%;
+    --input: 156 30% 12%;
+    --ring: 156 80% 45%;
   }
 
   /* Blue Theme */

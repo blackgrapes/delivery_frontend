@@ -4,98 +4,94 @@ import { Badge } from "@/components/ui/badge";
 
 const ConfigStats = () => {
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">
                 Active Settings
-              </p>
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">42</span>
-                <Badge variant="success" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight text-foreground">
+                  42
+                </h3>
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary text-xs">
                   Live
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Currently configured
-              </p>
             </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Settings className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-primary/10 rounded-2xl">
+              <Settings className="h-5 w-5 text-primary" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">
                 Verified Config
-              </p>
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">38</span>
-                <Badge variant="success" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight text-green-600">
+                  38
+                </h3>
+                <Badge variant="outline" className="border-green-500/20 bg-green-500/5 text-green-600 text-xs">
                   Valid
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Settings validated
-              </p>
             </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            <div className="p-3 bg-green-500/10 rounded-2xl">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">
                 Pending Changes
-              </p>
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">4</span>
-                <Badge variant="warning" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight text-orange-600">
+                  4
+                </h3>
+                <Badge variant="outline" className="border-orange-500/20 bg-orange-500/5 text-orange-600 text-xs">
                   Review
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Requires attention
-              </p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <AlertCircle className="h-6 w-6 text-orange-600" />
+            <div className="p-3 bg-orange-500/10 rounded-2xl">
+              <AlertCircle className="h-5 w-5 text-orange-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">
                 Security Level
-              </p>
+              </span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">High</span>
-                <Badge variant="info" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight text-purple-600">
+                  High
+                </h3>
+                <Badge variant="outline" className="border-purple-500/20 bg-purple-500/5 text-purple-600 text-xs">
                   Protected
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                All features enabled
-              </p>
             </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <Shield className="h-6 w-6 text-purple-600" />
+            <div className="p-3 bg-purple-500/10 rounded-2xl">
+              <Shield className="h-5 w-5 text-purple-600" />
             </div>
           </div>
         </CardContent>

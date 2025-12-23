@@ -18,6 +18,7 @@ export interface BookingFormData {
   breadth: string;
   height: string;
   volumetricWeight: string;
+  forwardingWeight?: string; // Actual weight used for forwarding vendor
   chargeableWeight: string;
 
   // Charges
@@ -95,8 +96,12 @@ export interface Customer {
   kycStatus?: string;
   kycDocumentType?: string;
   kycDocumentNumber?: string;
-}
 
+  // Logistics Configuration
+  allowedServices?: string[]; // e.g., ["SURFACE", "AIR"]
+  serviceableZones?: string[]; // e.g., ["ZONE_A", "ZONE_B"]
+  riskStatus?: "LOW" | "MEDIUM" | "HIGH"; // For Credit Checks
+}
 export interface Receiver {
   id: string;
   name: string;

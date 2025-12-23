@@ -126,7 +126,7 @@ const RatesManagement = () => {
     }
 
     return (
-        <div className="space-y-2 p-1">
+        <div className="space-y-7 p-6">
             <RatesHeader
                 onAddRate={handleAdd}
                 onCalculate={() => setShowCalculator(true)}
