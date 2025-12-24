@@ -5,7 +5,7 @@ import {
   Thermometer,
   ShieldAlert,
   CheckCircle2,
-  XCircle,
+  Box,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,107 +23,82 @@ const ProductsStats = ({ products }: ProductsStatsProps) => {
     (p) => p.temperatureSensitive
   ).length;
 
+  // Use fragile + hazardous count as 'Special Handling' metric
+  const specialHandling = fragileProducts + hazardousProducts;
+
   return (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-3">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Products
-              </p>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
+        <CardContent className="p-5">
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Total SKUs</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {products.length}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight">{products.length}</h3>
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary text-xs">
                   Catalog
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Products in catalog
-              </p>
             </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Package className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-primary/10 rounded-2xl">
+              <Package className="h-5 w-5 text-primary" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Active Products
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Active Items</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {activeProducts}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
+                <h3 className="text-3xl font-bold tracking-tight text-green-600">{activeProducts}</h3>
+                <Badge variant="outline" className="border-green-500/20 bg-green-500/5 text-green-600 text-xs">
                   Live
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Currently available
-              </p>
             </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            <div className="p-3 bg-green-500/10 rounded-2xl">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Fragile Items
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Fragile / Hazmat</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {fragileProducts}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Handle Care
+                <h3 className="text-3xl font-bold tracking-tight text-orange-600">{specialHandling}</h3>
+                <Badge variant="outline" className="border-orange-500/20 bg-orange-500/5 text-orange-600 text-xs">
+                  Special Care
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Require special handling
-              </p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <ShieldAlert className="h-6 w-6 text-orange-600" />
+            <div className="p-3 bg-orange-500/10 rounded-2xl">
+              <ShieldAlert className="h-5 w-5 text-orange-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Hazardous Goods
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Temp Sensitive</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {hazardousProducts}
-                </span>
-                <Badge variant="error" className="rounded-full text-xs">
-                  Danger
+                <h3 className="text-3xl font-bold tracking-tight text-blue-600">{temperatureSensitive}</h3>
+                <Badge variant="outline" className="border-blue-500/20 bg-blue-500/5 text-blue-600 text-xs">
+                  Cold Chain
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Special restrictions apply
-              </p>
             </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <AlertTriangle className="h-6 w-6 text-purple-600" />
+            <div className="p-3 bg-blue-500/10 rounded-2xl">
+              <Thermometer className="h-5 w-5 text-blue-600" />
             </div>
           </div>
         </CardContent>

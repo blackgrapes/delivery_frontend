@@ -7,7 +7,9 @@ export const mockRateRules: RateRule[] = [
     name: "Standard Corporate Rates",
     customerType: "CUSTOMER",
     serviceType: "SURFACE",
+    vehicleType: "TATA ACE",
     paymentMode: "ALL",
+    volumetricDivisor: 4500,
     slabs: [
       {
         id: "1",
@@ -126,6 +128,7 @@ export const mockRateRules: RateRule[] = [
     customerType: "AGENT",
     serviceType: "AIR",
     paymentMode: "PREPAID",
+    volumetricDivisor: 5000,
     slabs: [
       {
         id: "1",

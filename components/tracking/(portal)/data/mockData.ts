@@ -13,9 +13,12 @@ export const customerTrackingData = [
     package: {
       type: "Electronics",
       weight: "5 kg",
+      dimensions: "20 x 15 x 10 cm",
       description: "Mobile Phone",
       codAmount: "₹500",
       declaredValue: "₹15,000",
+      serviceType: "Express",
+      paymentMode: "COD"
     },
     status: "in_transit",
     currentStatus: "Reached Kolkata Hub",
@@ -56,9 +59,12 @@ export const customerTrackingData = [
     package: {
       type: "Documents",
       weight: "0.5 kg",
+      dimensions: "30 x 21 x 1 cm",
       description: "Legal Contracts",
       codAmount: "-",
       declaredValue: "₹0",
+      serviceType: "Standard",
+      paymentMode: "Prepaid"
     },
     status: "out_for_delivery",
     currentStatus: "With delivery agent",
@@ -105,9 +111,12 @@ export const customerTrackingData = [
     package: {
       type: "Clothing",
       weight: "3 kg",
+      dimensions: "40 x 30 x 15 cm",
       description: "Summer Collection",
       codAmount: "₹1,500",
       declaredValue: "₹8,000",
+      serviceType: "Standard",
+      paymentMode: "COD"
     },
     status: "delivered",
     currentStatus: "Delivered successfully",
@@ -149,9 +158,12 @@ export const customerTrackingData = [
     package: {
       type: "Fragile",
       weight: "8 kg",
+      dimensions: "50 x 50 x 50 cm",
       description: "Glass Items",
       codAmount: "₹800",
       declaredValue: "₹12,000",
+      serviceType: "Express",
+      paymentMode: "Prepaid"
     },
     status: "exception",
     currentStatus: "Delivery failed - Address issue",
@@ -203,9 +215,12 @@ export const customerTrackingData = [
     package: {
       type: "Documents",
       weight: "0.5 kg",
+      dimensions: "30 x 21 x 1 cm",
       description: "Academic Certificates",
       codAmount: "-",
       declaredValue: "₹0",
+      serviceType: "Standard",
+      paymentMode: "Prepaid"
     },
     status: "pending",
     currentStatus: "Awaiting pickup",

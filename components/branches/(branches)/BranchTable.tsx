@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { branchesData } from "./data/mockData";
 import {
   Building,
   MapPin,
@@ -26,8 +26,17 @@ import {
   Edit,
   Trash2,
 } from "lucide-react";
+import { branchesData } from "./data/mockData";
 
-export const BranchTable = () => {
+type Branch = typeof branchesData[0];
+
+interface BranchTableProps {
+  branches: Branch[];
+  onEditBranch: (branch: Branch) => void;
+  onDeleteBranch: (branchId: string) => void;
+}
+
+export const BranchTable = ({ branches, onEditBranch, onDeleteBranch }: BranchTableProps) => {
   return (
     <Card className="rounded-3xl border-border/70 bg-card/95 shadow-card">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -70,16 +79,15 @@ export const BranchTable = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {branchesData.map((branch) => (
+            {branches.map((branch) => (
               <TableRow key={branch.id} className="group hover:bg-muted/20">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <div
-                      className={`rounded-2xl p-2 ${
-                        branch.type === "company"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-warning/10 text-warning"
-                      }`}
+                      className={`rounded-2xl p-2 ${branch.type === "company"
+                        ? "bg-primary/10 text-primary"
+                        : "bg-warning/10 text-warning"
+                        }`}
                     >
                       <Building className="h-5 w-5" />
                     </div>
@@ -140,13 +148,12 @@ export const BranchTable = () => {
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-2 overflow-hidden rounded-full bg-muted/40">
                         <div
-                          className={`h-full rounded-full ${
-                            branch.performance >= 90
-                              ? "bg-success"
-                              : branch.performance >= 80
+                          className={`h-full rounded-full ${branch.performance >= 90
+                            ? "bg-success"
+                            : branch.performance >= 80
                               ? "bg-warning"
                               : "bg-error"
-                          }`}
+                            }`}
                           style={{ width: `${branch.performance}%` }}
                         />
                       </div>
@@ -177,16 +184,16 @@ export const BranchTable = () => {
                       branch.status === "active"
                         ? "success"
                         : branch.status === "maintenance"
-                        ? "warning"
-                        : "secondary"
+                          ? "warning"
+                          : "secondary"
                     }
                     className="rounded-full"
                   >
                     {branch.status === "active"
                       ? "Active"
                       : branch.status === "maintenance"
-                      ? "Maintenance"
-                      : "Inactive"}
+                        ? "Maintenance"
+                        : "Inactive"}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -206,11 +213,17 @@ export const BranchTable = () => {
                           <Eye className="h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2 rounded-lg">
+                        <DropdownMenuItem
+                          className="flex items-center gap-2 rounded-lg"
+                          onClick={() => onEditBranch(branch)}
+                        >
                           <Edit className="h-4 w-4" />
                           Edit Branch
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="flex items-center gap-2 rounded-lg text-error">
+                        <DropdownMenuItem
+                          className="flex items-center gap-2 rounded-lg text-error"
+                          onClick={() => onDeleteBranch(branch.id)}
+                        >
                           <Trash2 className="h-4 w-4" />
                           Deactivate
                         </DropdownMenuItem>

@@ -52,6 +52,7 @@ export const mockLocations: Location[] = [
     createdAt: "2024-01-15T10:00:00Z",
     updatedAt: "2024-12-11T08:30:00Z",
     parentHubId: undefined,
+    gstin: "27AABCT1234F1Z5",
     ownershipType: "COCO",
   },
   {

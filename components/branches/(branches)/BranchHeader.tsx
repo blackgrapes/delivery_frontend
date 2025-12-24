@@ -9,7 +9,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export const BranchHeader = () => {
+interface BranchHeaderProps {
+  onAddBranch: () => void;
+  branchCount: number;
+}
+
+export const BranchHeader = ({ onAddBranch, branchCount }: BranchHeaderProps) => {
   return (
     <section className="rounded-3xl border border-border/70 bg-card/95 p-7 shadow-card">
       <div className="flex flex-wrap md:flex-nowrap items-start justify-between gap-5">
@@ -30,7 +35,7 @@ export const BranchHeader = () => {
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-2 rounded-full bg-muted/50 px-3 py-1">
               <Building className="h-3.5 w-3.5 text-primary" />
-              48 branches nationwide
+              {branchCount} branches nationwide
             </span>
             <span className="flex items-center gap-2 rounded-full bg-muted/40 px-3 py-1">
               <Activity className="h-3.5 w-3.5 text-success" />
@@ -44,7 +49,10 @@ export const BranchHeader = () => {
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex gap-2">
-            <Button className="gap-2 rounded-lg bg-primary text-primary-foreground shadow-brand">
+            <Button
+              className="gap-2 rounded-lg bg-primary text-primary-foreground shadow-brand"
+              onClick={onAddBranch}
+            >
               <Plus className="h-4 w-4" />
               Add New Branch
             </Button>

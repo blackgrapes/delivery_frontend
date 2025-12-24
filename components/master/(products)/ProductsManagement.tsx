@@ -123,7 +123,7 @@ const ProductsManagement = () => {
   });
 
   return (
-    <div className="space-y-2 p-1">
+    <div className="space-y-7 p-6">
       <ProductsHeader
         onAddProduct={handleAddProduct}
         onBulkUpload={() => setShowBulkUpload(true)}

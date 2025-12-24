@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Truck, Menu } from "lucide-react";
+import { Truck, Menu, Briefcase } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export function PublicHeader() {
@@ -34,13 +34,22 @@ export function PublicHeader() {
           >
             Get Quote
           </Link>
-          <Link
+          {/* <Link
             href="/#services"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Services
-          </Link>
+          </Link> */}
           <div className="h-6 w-px bg-border/50 mx-2" />
+
+          <Link href="/register/business">
+            <Button variant="outline" size="sm" className="hidden md:flex border-primary/20 hover:bg-primary/5 hover:text-primary">
+              <Briefcase className="mr-2 h-4 w-4" />
+              <span className="lg:hidden">Business</span>
+              <span className="hidden lg:inline">Open Business Account</span>
+            </Button>
+          </Link>
+
           <Link href="/login">
             <Button variant="ghost" size="sm">
               Login
@@ -77,13 +86,20 @@ export function PublicHeader() {
                 <Link href="/quote" className="text-sm font-medium hover:text-primary">
                   Get Quote
                 </Link>
-                <Link href="/#services" className="text-sm font-medium hover:text-primary">
+                {/* <Link href="/#services" className="text-sm font-medium hover:text-primary">
                   Our Services
-                </Link>
+                </Link> */}
                 <div className="h-px bg-border my-2" />
+
+                <Link href="/register/business">
+                  <Button variant="outline" className="w-full justify-start border-primary/20 text-primary">
+                    <Briefcase className="mr-2 h-4 w-4" /> Open Business Account
+                  </Button>
+                </Link>
+
                 <Link href="/login">
-                  <Button variant="outline" className="w-full justify-start">
-                    Partner Login
+                  <Button variant="ghost" className="w-full justify-start">
+                    Login
                   </Button>
                 </Link>
                 <Link href="/book">

@@ -14,6 +14,20 @@ export interface Driver {
   hubId: string; // Home base
   rating: number;
   dateOfJoining: string;
+  fatherName?: string;
+  address: string;
+  emergencyContact: {
+    name: string;
+    phone: string;
+    relation: string;
+  };
+  bloodGroup?: string;
+  panCard?: string;
+  bankDetails?: {
+    accountNo: string;
+    ifscCode: string;
+    bankName: string;
+  };
 }
 
 export interface DriverFormData extends Omit<Driver, 'id' | 'code'> {}

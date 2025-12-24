@@ -71,6 +71,7 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
     nextAudit: new Date().toISOString().split("T")[0],
     ownershipType: "COCO",
     parentHubId: "",
+    gstin: "",
   });
 
   const [newFacility, setNewFacility] = useState("");
@@ -102,6 +103,7 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
         nextAudit: location.nextAudit,
         ownershipType: location.ownershipType || "COCO",
         parentHubId: location.parentHubId || "",
+        gstin: location.gstin || "",
       });
     }
   }, [location]);
@@ -132,6 +134,16 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
     setFormData((prev) => ({
       ...prev,
       operatingHours: { ...prev.operatingHours, [field]: value },
+    }));
+  };
+
+  const handleCoordinateChange = (
+    field: keyof LocationFormData["coordinates"],
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      coordinates: { ...prev.coordinates, [field]: parseFloat(value) || 0 },
     }));
   };
 
@@ -320,6 +332,19 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="gstin">GSTIN (Optional)</Label>
+                  <Input
+                    id="gstin"
+                    value={formData.gstin}
+                    onChange={(e) =>
+                      handleInputChange("gstin", e.target.value)
+                    }
+                    className="rounded-lg"
+                    placeholder="Goods and Services Tax Identification Number"
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="manager">Manager *</Label>
                   <Input
                     id="manager"
@@ -467,6 +492,37 @@ const LocationForm = ({ location, onSave, onCancel }: LocationFormProps) => {
                     }
                     required
                     className="rounded-lg"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="lat">Latitude</Label>
+                  <Input
+                    id="lat"
+                    type="number"
+                    step="any"
+                    value={formData.coordinates.lat}
+                    onChange={(e) =>
+                      handleCoordinateChange("lat", e.target.value)
+                    }
+                    className="rounded-lg"
+                    placeholder="e.g. 19.0760"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lng">Longitude</Label>
+                  <Input
+                    id="lng"
+                    type="number"
+                    step="any"
+                    value={formData.coordinates.lng}
+                    onChange={(e) =>
+                      handleCoordinateChange("lng", e.target.value)
+                    }
+                    className="rounded-lg"
+                    placeholder="e.g. 72.8777"
                   />
                 </div>
               </div>

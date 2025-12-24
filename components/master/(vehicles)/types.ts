@@ -14,6 +14,12 @@ export interface Vehicle {
   insuranceExpiry: string;
   fitnessExpiry: string;
   fuelType: 'DIESEL' | 'PETROL' | 'CNG' | 'ELECTRIC';
+  ownershipType: 'OWNED' | 'LEASED' | 'MARKET';
+  pollutionCertExpiry: string;
+  permitType: 'NATIONAL' | 'STATE';
+  gpsDeviceId?: string;
+  lastServiceDate?: string;
+  nextServiceDue?: string;
 }
 
 export interface VehicleFormData extends Omit<Vehicle, 'id'> {}

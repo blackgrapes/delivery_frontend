@@ -61,6 +61,12 @@ export const mockCustomers: Customer[] = [
       },
     ],
     status: "active",
+    // New Master Data Fields
+    allowedServices: ["SURFACE", "AIR", "EXPRESS"],
+    serviceableZones: ["ALL"],
+    riskStatus: "LOW",
+    creditLimit: 50000,
+    paymentMode: "CREDIT" // Default PREFERENCE
   },
   {
     id: "2",

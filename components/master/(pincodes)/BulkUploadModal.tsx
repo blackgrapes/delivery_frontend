@@ -1,9 +1,17 @@
-// components/master/pincodes/BulkUploadModal.tsx
 import { useState } from "react";
-import { X, Upload, Download, FileText, AlertCircle } from "lucide-react";
+import { X, Upload, Download, FileText, AlertCircle, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BulkUploadModalProps {
   onUpload: (data: any[]) => void;
@@ -14,6 +22,8 @@ const BulkUploadModal = ({ onUpload, onCancel }: BulkUploadModalProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [defaultBranch, setDefaultBranch] = useState("");
+  const [defaultCategory, setDefaultCategory] = useState("SELF");
 
   const handleFileSelect = (selectedFile: File) => {
     if (
@@ -118,6 +128,10 @@ const BulkUploadModal = ({ onUpload, onCancel }: BulkUploadModalProps) => {
               if (!row.country) row.country = "India";
               if (!row.status) row.status = "active";
               if (!row.specialInstructions) row.specialInstructions = "";
+
+              // Apply bulk configurations if CSV value is empty
+              if (!row.controllingBranchId && defaultBranch) row.controllingBranchId = defaultBranch;
+              if (!row.serviceCategory && defaultCategory) row.serviceCategory = defaultCategory;
 
               return row;
             })
@@ -247,14 +261,52 @@ const BulkUploadModal = ({ onUpload, onCancel }: BulkUploadModalProps) => {
             </div>
           </div>
 
+          {/* Default Configuration */}
+          <div className="p-4 bg-muted/30 rounded-xl border border-border/50 space-y-3">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <Settings className="h-4 w-4 text-primary" />
+              Default Configuration (Optional)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="defBranch" className="text-xs">
+                  Assign to Branch ID
+                </Label>
+                <Input
+                  id="defBranch"
+                  placeholder="e.g. BR-MUM-01"
+                  onChange={(e) => setDefaultBranch(e.target.value)}
+                  className="h-8 text-sm"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="defCat" className="text-xs">
+                  Service Category
+                </Label>
+                <Select onValueChange={setDefaultCategory}>
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder="Select Category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SELF">Self Owned</SelectItem>
+                    <SelectItem value="PARTNER">Partner</SelectItem>
+                    <SelectItem value="FRANCHISE">Franchise</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <p className="text-[10px] text-muted-foreground">
+              These values will be applied to all records where the CSV column is empty or missing.
+            </p>
+          </div>
+
           {/* File Upload Area */}
           <div className="relative">
             <div
-              className={`border-2 border-dashed rounded-xl p-4 sm:p-6 text-center transition-colors ${
-                isDragging
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-muted/30"
-              } ${isUploading ? "opacity-50" : ""}`}
+              className={`border-2 border-dashed rounded-xl p-4 sm:p-6 text-center transition-colors ${isDragging
+                ? "border-primary bg-primary/5"
+                : "border-border bg-muted/30"
+                } ${isUploading ? "opacity-50" : ""}`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}

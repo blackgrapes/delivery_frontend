@@ -1,21 +1,32 @@
-// components/master/customers/CustomerList.tsx
+import { useRouter } from "next/navigation";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Users,
+  MoreHorizontal,
+  Eye,
   Edit,
   Trash2,
+  Building2,
   MapPin,
-  Phone,
   Mail,
-  Building,
-  BadgeCheck,
-  XCircle,
-  Users,
-  User,
-  Truck,
-  Globe,
+  Phone,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Customer } from "./types";
 
 interface CustomerListProps {
@@ -29,323 +40,165 @@ const CustomerList = ({
   onEditCustomer,
   onDeleteCustomer,
 }: CustomerListProps) => {
+  const router = useRouter();
+
+  const handleViewProfile = (customerId: string) => {
+    router.push(`/dashboard/master/customers/${customerId}`);
+  };
+
   return (
-    <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building className="h-5 w-5 text-primary" />
-          Customer List
-          <Badge variant="secondary" className="rounded-full">
-            {customers.length} customers
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {customers.map((customer) => (
-            <Card key={customer.id} className="rounded-xl border-border/70">
-              <CardContent className="p-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className="rounded-xl bg-primary/10 p-3">
-                      <Building className="h-6 w-6 text-primary" />
-                    </div>
-
-                    <div className="flex-1 space-y-3">
-                      <div className="flex items-center gap-3">
-                        <div>
-                          <h3 className="font-semibold text-foreground">
-                            {customer.name}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <code className="text-sm font-mono text-muted-foreground bg-muted px-2 py-1 rounded">
-                              {customer.code}
-                            </code>
-                            {customer.gstin && (
-                              <Badge
-                                variant="outline"
-                                className="rounded-full text-xs"
-                              >
-                                GST: {customer.gstin}
-                              </Badge>
-                            )}
-                            <Badge
-                              variant={
-                                customer.status === "active"
-                                  ? "success"
-                                  : "secondary"
-                              }
-                              className="rounded-full text-xs"
-                            >
-                              {customer.status === "active" ? (
-                                <BadgeCheck className="h-3 w-3 mr-1" />
-                              ) : (
-                                <XCircle className="h-3 w-3 mr-1" />
-                              )}
-                              {customer.status}
-                            </Badge>
-                            {customer.isInterStateDealer && (
-                              <Badge
-                                variant="info"
-                                className="rounded-full text-xs"
-                              >
-                                Inter-State
-                              </Badge>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-muted-foreground" />
-                            <span>
-                              {customer.address1}, {customer.city} -{" "}
-                              {customer.pincode}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <span>{customer.mobileNo}</span>
-                            {customer.phoneO && (
-                              <span>• O: {customer.phoneO}</span>
-                            )}
-                            {customer.phoneR && (
-                              <span>• R: {customer.phoneR}</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <span>{customer.email}</span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div>
-                            <span className="text-muted-foreground">
-                              Contact:{" "}
-                            </span>
-                            <span className="font-medium">
-                              {customer.contactPerson}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">
-                              Category:{" "}
-                            </span>
-                            <span className="font-medium">
-                              {customer.category}
-                            </span>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">
-                              Payment:{" "}
-                            </span>
-                            <span className="font-medium">
-                              {customer.paymentMode}
-                            </span>
-                          </div>
-                          {customer.creditLimit && (
-                            <div>
-                              <span className="text-muted-foreground">
-                                Credit Limit:{" "}
-                              </span>
-                              <span className="font-medium">
-                                ₹{customer.creditLimit.toLocaleString()}
-                              </span>
-                            </div>
-                          )}
-                          {customer.paymentTerms && (
-                            <div>
-                              <span className="text-muted-foreground">
-                                Terms:{" "}
-                              </span>
-                              <span className="font-medium">
-                                {customer.paymentTerms}
-                              </span>
-                            </div>
-                          )}
-                          {customer.contractId && (
-                            <div className="col-span-1 md:col-span-2">
-                              <span className="text-muted-foreground">
-                                Contract ID:{" "}
-                              </span>
-                              <Badge variant="outline" className="font-mono text-xs">
-                                {customer.contractId}
-                              </Badge>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Receivers Section */}
-                      {customer.hasReceiver &&
-                        customer.receivers &&
-                        customer.receivers.length > 0 && (
-                          <div className="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Users className="h-4 w-4 text-blue-600" />
-                              <span className="text-sm font-medium text-blue-800">
-                                Receivers ({customer.receivers.length})
-                              </span>
-                            </div>
-                            <div className="space-y-2">
-                              {customer.receivers
-                                .slice(0, 2)
-                                .map((receiver, index) => (
-                                  <div
-                                    key={receiver.id}
-                                    className="text-xs text-blue-700"
-                                  >
-                                    <div className="font-medium">
-                                      {receiver.name}
-                                    </div>
-                                    <div>
-                                      {receiver.address}, {receiver.city} -{" "}
-                                      {receiver.pincode}
-                                    </div>
-                                    <div>{receiver.mobileNo}</div>
-                                  </div>
-                                ))}
-                              {customer.receivers.length > 2 && (
-                                <div className="text-xs text-blue-600">
-                                  +{customer.receivers.length - 2} more
-                                  receivers
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                      {/* Pickup Locations Section */}
-                      {customer.usePickupLocation &&
-                        customer.pickupLocations &&
-                        customer.pickupLocations.length > 0 && (
-                          <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Truck className="h-4 w-4 text-green-600" />
-                              <span className="text-sm font-medium text-green-800">
-                                Pickup Locations (
-                                {customer.pickupLocations.length})
-                              </span>
-                            </div>
-                            <div className="space-y-2">
-                              {customer.pickupLocations
-                                .slice(0, 2)
-                                .map((location, index) => (
-                                  <div
-                                    key={location.id}
-                                    className="text-xs text-green-700"
-                                  >
-                                    <div className="font-medium">
-                                      {location.name}
-                                    </div>
-                                    <div>
-                                      {location.address}, {location.city} -{" "}
-                                      {location.pincode}
-                                    </div>
-                                    <div>
-                                      Contact: {location.contactPerson} (
-                                      {location.mobileNo})
-                                    </div>
-                                  </div>
-                                ))}
-                              {customer.pickupLocations.length > 2 && (
-                                <div className="text-xs text-green-600">
-                                  +{customer.pickupLocations.length - 2} more
-                                  locations
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                      <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                        <span>Booked by: {customer.bookedBy}</span>
-                        {customer.registrationSource === "WEBSITE" && (
-                          <>
-                            <span>•</span>
-                            <div className="flex items-center gap-1 text-blue-600 font-medium">
-                              <Globe className="h-3 w-3" />
-                              Web User
-                            </div>
-                          </>
-                        )}
-                        {customer.portalAccess && (
-                          <>
-                            <span>•</span>
-                            <div className="flex items-center gap-1 text-primary font-medium">
-                              <User className="h-3 w-3" />
-                              Portal Active
-                            </div>
-                          </>
-                        )}
-                        <span>•</span>
-                        <span>Station: {customer.station}</span>
-                        <span>•</span>
-                        <span>Quotation: {customer.quotationType}</span>
-                        {customer.hasReceiver && (
-                          <>
-                            <span>•</span>
-                            <Badge
-                              variant="outline"
-                              className="rounded-full text-xs"
-                            >
-                              Has Receiver
-                            </Badge>
-                          </>
-                        )}
-                        {customer.usePickupLocation && (
-                          <>
-                            <span>•</span>
-                            <Badge
-                              variant="outline"
-                              className="rounded-full text-xs"
-                            >
-                              Pickup Location
-                            </Badge>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 rounded-lg"
-                      onClick={() => onEditCustomer(customer)}
-                    >
-                      <Edit className="h-4 w-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
-                      onClick={() => onDeleteCustomer(customer.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-
-          {customers.length === 0 && (
-            <div className="text-center py-12 border-2 border-dashed border-border rounded-xl bg-muted/30">
-              <Building className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <p className="text-muted-foreground mb-2">No customers found</p>
-              <p className="text-sm text-muted-foreground">
-                Try adjusting your search criteria or add a new customer
-              </p>
-            </div>
-          )}
+    <Card className="rounded-3xl border-border/70 bg-card/95 shadow-card">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle className="text-base font-semibold text-foreground">
+            All Customers
+          </CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Complete list of registered customers
+          </p>
         </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border-border/70"
+          >
+            Grid View
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-lg border-border/70 bg-muted/50"
+          >
+            Table View
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent className="p-0 overflow-x-auto">
+        <Table className="min-w-[1200px]">
+          <TableHeader>
+            <TableRow className="bg-muted/50">
+              <TableHead className="pl-6 min-w-[350px]">Customer Details</TableHead>
+              <TableHead className="min-w-[250px]">Contact Info</TableHead>
+              <TableHead className="min-w-[200px]">Type & GST</TableHead>
+              <TableHead className="min-w-[120px]">Status</TableHead>
+              <TableHead className="text-right pr-6 min-w-[80px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {customers.map((customer) => (
+              <TableRow key={customer.id} className="group hover:bg-muted/20">
+                <TableCell className="pl-6">
+                  <div className="flex items-start gap-4 py-2">
+                    <div className={`mt-1 rounded-2xl p-2.5 ${customer.customerType === "REGULAR" ? "bg-primary/10 text-primary" : "bg-blue-100 text-blue-600"}`}>
+                      {customer.customerType === "REGULAR" ? (
+                        <Building2 className="h-5 w-5" />
+                      ) : (
+                        <Users className="h-5 w-5" />
+                      )}
+                    </div>
+                    <div className="space-y-1.5">
+                      <div className="flex items-start gap-2">
+                        <span
+                          className="font-semibold text-foreground text-base leading-snug max-w-[240px] cursor-pointer hover:underline hover:text-primary transition-colors"
+                          onClick={() => handleViewProfile(customer.id)}
+                        >
+                          {customer.name}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 rounded-md border-border text-[10px] font-mono uppercase bg-muted/50 px-1.5 h-5 flex items-center"
+                        >
+                          {customer.code}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                        {customer.customerType === "REGULAR" ? "Corporate Account" : "Individual Account"}
+                      </p>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="space-y-1.5 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                      <span className="truncate max-w-[200px]">{customer.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                      {customer.phoneO || customer.mobileNo}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                      <span className="truncate max-w-[200px]">{customer.city}, {customer.station}</span>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="space-y-1.5">
+                    <Badge variant="secondary" className="rounded-full px-2.5 font-normal">
+                      {customer.customerType}
+                    </Badge>
+                    {customer.gstin ? (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">GST</span>
+                        <span className="text-xs font-mono text-foreground bg-muted/50 px-1.5 py-0.5 rounded">{customer.gstin}</span>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground italic pl-1">Unregistered</div>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      customer.status === "active" ? "success" : "secondary"
+                    }
+                    className="rounded-full px-3 capitalize shadow-sm"
+                  >
+                    {customer.status === "active" ? "Active" : "Inactive"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right pr-6">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="rounded-lg h-8 w-8 p-0 hover:bg-muted"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="rounded-xl shadow-lg border-border/60">
+                      <DropdownMenuItem
+                        className="gap-2 rounded-lg cursor-pointer"
+                        onClick={() => handleViewProfile(customer.id)}
+                      >
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        View Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="gap-2 rounded-lg cursor-pointer"
+                        onClick={() => onEditCustomer(customer)}
+                      >
+                        <Edit className="h-4 w-4 text-muted-foreground" />
+                        Edit Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="gap-2 rounded-lg text-error focus:text-error focus:bg-error/10 cursor-pointer"
+                        onClick={() => onDeleteCustomer(customer.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete Customer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

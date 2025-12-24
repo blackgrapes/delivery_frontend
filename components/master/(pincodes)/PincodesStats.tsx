@@ -1,11 +1,11 @@
-// components/master/pincodes/PincodesStats.tsx
+
 import {
   MapPin,
   Clock,
-  Truck,
   Package,
+  Navigation,
   CheckCircle2,
-  XCircle,
+  XCircle
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,105 +21,81 @@ const PincodesStats = ({ pincodes }: PincodesStatsProps) => {
     (p) => p.serviceability === "express" || p.serviceability === "same_day"
   ).length;
   const codAvailable = pincodes.filter((p) => p.codAvailable).length;
-  const pickupAvailable = pincodes.filter((p) => p.pickupAvailable).length;
+  const total = pincodes.length;
 
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Pincodes
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Total Coverage</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {pincodes.length}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Active
+                <h3 className="text-3xl font-bold tracking-tight">{total}</h3>
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary text-xs">
+                  Pincodes
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">Serviceable areas</p>
             </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <MapPin className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-primary/10 rounded-2xl">
+              <MapPin className="h-5 w-5 text-primary" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Active Pincodes
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Live Areas</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {activePincodes}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Live
+                <h3 className="text-3xl font-bold tracking-tight text-green-600">{activePincodes}</h3>
+                <Badge variant="outline" className="border-green-500/20 bg-green-500/5 text-green-600 text-xs">
+                  Serviceable
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Currently serviceable
-              </p>
             </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
+            <div className="p-3 bg-green-500/10 rounded-2xl">
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Express Service
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Express Lane</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {expressService}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Fast
+                <h3 className="text-3xl font-bold tracking-tight text-purple-600">{expressService}</h3>
+                <Badge variant="outline" className="border-purple-500/20 bg-purple-500/5 text-purple-600 text-xs">
+                  Fast Track
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Same/Next day delivery
-              </p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <Clock className="h-6 w-6 text-orange-600" />
+            <div className="p-3 bg-purple-500/10 rounded-2xl">
+              <Clock className="h-5 w-5 text-purple-600" />
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
+      <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card overflow-hidden">
         <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                COD Available
-              </p>
+          <div className="flex justify-between items-start">
+            <div className="space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">COD Enabled</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {codAvailable}
-                </span>
-                <Badge variant="info" className="rounded-full text-xs">
-                  Cash
+                <h3 className="text-3xl font-bold tracking-tight text-blue-600">{codAvailable}</h3>
+                <Badge variant="outline" className="border-blue-500/20 bg-blue-500/5 text-blue-600 text-xs">
+                  Pay on Del.
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground">Cash on delivery</p>
             </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <Package className="h-6 w-6 text-purple-600" />
+            <div className="p-3 bg-blue-500/10 rounded-2xl">
+              <Package className="h-5 w-5 text-blue-600" />
             </div>
           </div>
         </CardContent>

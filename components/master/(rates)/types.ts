@@ -6,7 +6,11 @@ export interface RateRule {
   customerName?: string;
   customerType: "CUSTOMER" | "AGENT" | "VENDOR" | "ALL";
   serviceType: "SURFACE" | "AIR" | "EXPRESS" | "ALL";
+  vehicleType?: string; // e.g., "TATA ACE", "10FT", "20FT" - aligns with Route vehicleTypeRequired
   paymentMode: "PREPAID" | "COD" | "CREDIT" | "ALL";
+  
+  // Volumetric Weight Calculation
+  volumetricDivisor?: number; // e.g., 5000 for Air, 6000 for Surface (CFT)
 
   // Slab-wise rates
   slabs: SlabRate[];
