@@ -46,8 +46,8 @@ const WeightUpdateModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
-      <Card className="w-full max-w-2xl rounded-2xl border-border/70 shadow-lg">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <Card className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border-border/70 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Scale className="h-5 w-5" />
@@ -122,11 +122,10 @@ const WeightUpdateModal = ({
                     Weight Difference
                   </p>
                   <p
-                    className={`text-lg font-bold ${
-                      parseFloat(weightInput) > weight.weights.declared
-                        ? "text-red-600"
-                        : "text-green-600"
-                    }`}
+                    className={`text-lg font-bold ${parseFloat(weightInput) > weight.weights.declared
+                      ? "text-red-600"
+                      : "text-green-600"
+                      }`}
                   >
                     {parseFloat(weightInput) - weight.weights.declared > 0
                       ? "+"
@@ -145,7 +144,7 @@ const WeightUpdateModal = ({
                     {Math.abs(
                       ((parseFloat(weightInput) - weight.weights.declared) /
                         weight.weights.declared) *
-                        100
+                      100
                     ).toFixed(1)}
                     %
                   </p>

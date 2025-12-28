@@ -1,112 +1,83 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Scale, AlertCircle, IndianRupee, BarChart3 } from "lucide-react";
 import { weightStats } from "./data";
 
 const WeightStats = () => {
+  const statItems = [
+    {
+      title: "Total Processed",
+      value: weightStats.totalProcessed,
+      icon: Scale,
+      change: "Today",
+      trend: "up",
+      description: "Weight entries",
+    },
+    {
+      title: "Discrepancies Found",
+      value: weightStats.discrepanciesFound,
+      icon: AlertCircle,
+      change: "Issues",
+      trend: "down",
+      description: "Requiring attention",
+    },
+    {
+      title: "Revenue Recovery",
+      value: `₹${weightStats.revenueRecovery}`,
+      icon: IndianRupee,
+      change: "Recovered",
+      trend: "up",
+      description: "From weight corrections",
+    },
+    {
+      title: "Accuracy Rate",
+      value: `${weightStats.accuracyRate}%`,
+      icon: BarChart3,
+      change: "Quality",
+      trend: "up",
+      description: "Weight declaration accuracy",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Processed
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {weightStats.totalProcessed}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Today
-                </Badge>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {statItems.map((stat, index) => (
+        <Card
+          key={index}
+          className="relative overflow-hidden rounded-2xl border-border/70 bg-card/95 shadow-card transition-all hover:shadow-lg"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">Weight entries</p>
-            </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Scale className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-red-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Discrepancies Found
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {weightStats.discrepanciesFound}
-                </span>
-                <Badge variant="error" className="rounded-full text-xs">
-                  Issues
-                </Badge>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <stat.icon className="h-5 w-5" />
               </div>
-              <p className="text-xs text-muted-foreground">
-                Requiring attention
-              </p>
             </div>
-            <div className="rounded-2xl bg-red-100 p-3">
-              <AlertCircle className="h-6 w-6 text-red-600" />
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${stat.trend === "up"
+                    ? "bg-success/15 text-success"
+                    : stat.trend === "down"
+                      ? "bg-warning/15 text-warning"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+              >
+                {stat.change}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {stat.description}
+              </span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Revenue Recovery
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  ₹{weightStats.revenueRecovery}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Recovered
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                From weight corrections
-              </p>
-            </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <IndianRupee className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Accuracy Rate
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {weightStats.accuracyRate}%
-                </span>
-                <Badge variant="info" className="rounded-full text-xs">
-                  Quality
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Weight declaration accuracy
-              </p>
-            </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <BarChart3 className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-primary/5 blur-2xl" />
+        </Card>
+      ))}
     </div>
   );
 };

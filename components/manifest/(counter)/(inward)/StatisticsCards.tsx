@@ -1,6 +1,5 @@
 import { Package, Clock, CheckCircle2, Zap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 interface StatsProps {
   stats: {
@@ -15,105 +14,81 @@ interface StatsProps {
 }
 
 const StatisticsCards = ({ stats }: StatsProps) => {
+  const statItems = [
+    {
+      title: "Total Received",
+      value: stats.totalReceived,
+      icon: Package,
+      change: "Today",
+      trend: "up",
+      description: "Shipments received",
+    },
+    {
+      title: "Pending Processing",
+      value: stats.pendingProcessing,
+      icon: Clock,
+      change: "Awaiting",
+      trend: "down",
+      description: "Need processing",
+    },
+    {
+      title: "Processed Today",
+      value: stats.processedToday,
+      icon: CheckCircle2,
+      change: `${stats.efficiency}%`,
+      trend: "up",
+      description: "Efficiency rate",
+    },
+    {
+      title: "Avg Processing Time",
+      value: stats.averageProcessingTime,
+      icon: Zap,
+      change: "Fast",
+      trend: "up",
+      description: "Per shipment",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Received
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.totalReceived}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Today
-                </Badge>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {statItems.map((stat, index) => (
+        <Card
+          key={index}
+          className="relative overflow-hidden rounded-2xl border-border/70 bg-card/95 shadow-card transition-all hover:shadow-lg"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Shipments received
-              </p>
-            </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Package className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Pending Processing
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.pendingProcessing}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Awaiting
-                </Badge>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <stat.icon className="h-5 w-5" />
               </div>
-              <p className="text-xs text-muted-foreground">Need processing</p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <Clock className="h-6 w-6 text-orange-600" />
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${stat.trend === "up"
+                    ? "bg-success/15 text-success"
+                    : stat.trend === "down"
+                      ? "bg-warning/15 text-warning"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+              >
+                {stat.change}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {stat.description}
+              </span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Processed Today
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.processedToday}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  {stats.efficiency}%
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">Efficiency rate</p>
-            </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Avg Processing Time
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.averageProcessingTime}
-                </span>
-                <Badge variant="info" className="rounded-full text-xs">
-                  Fast
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">Per shipment</p>
-            </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <Zap className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-primary/5 blur-2xl" />
+        </Card>
+      ))}
     </div>
   );
 };

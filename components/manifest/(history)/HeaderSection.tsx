@@ -2,7 +2,12 @@
 import { History, Download, Filter, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const HeaderSection = () => {
+interface HeaderSectionProps {
+  onExport?: () => void;
+  onRefresh?: () => void;
+}
+
+const HeaderSection = ({ onExport, onRefresh }: HeaderSectionProps) => {
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div className="space-y-2">
@@ -25,11 +30,18 @@ const HeaderSection = () => {
           <Filter className="h-4 w-4" />
           Advanced Analytics
         </Button>
-        <Button variant="outline" className="gap-2 rounded-xl border-border/70">
+        <Button
+          variant="outline"
+          className="gap-2 rounded-xl border-border/70"
+          onClick={onExport}
+        >
           <Download className="h-4 w-4" />
           Export Report
         </Button>
-        <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand">
+        <Button
+          className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand"
+          onClick={onRefresh}
+        >
           <RefreshCw className="h-4 w-4" />
           Refresh Data
         </Button>

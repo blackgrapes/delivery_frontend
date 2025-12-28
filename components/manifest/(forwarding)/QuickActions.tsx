@@ -3,7 +3,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Truck, Package, RefreshCw } from "lucide-react";
 
-const QuickActions = () => {
+interface QuickActionsProps {
+  onBulkUpload?: () => void;
+  onVehicleAssign?: () => void;
+  onBatchSelect?: () => void;
+  onAutoGenerate?: () => void;
+}
+
+const QuickActions = ({ onBulkUpload, onVehicleAssign, onBatchSelect, onAutoGenerate }: QuickActionsProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
       <CardContent className="p-6">
@@ -20,6 +27,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onBulkUpload}
             >
               <Upload className="h-4 w-4" />
               Bulk Upload
@@ -27,6 +35,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onVehicleAssign}
             >
               <Truck className="h-4 w-4" />
               Vehicle Assignment
@@ -34,6 +43,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onBatchSelect}
             >
               <Package className="h-4 w-4" />
               Batch Selection
@@ -41,6 +51,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onAutoGenerate}
             >
               <RefreshCw className="h-4 w-4" />
               Auto Generate

@@ -7,7 +7,9 @@ import StatisticsSection from "./StatisticsSection";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import MainContent from "./MainContent";
+import { ManifestTable } from "../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
+import CreateBagTagModal from "./CreateBagTagModal";
 import { bagTagsData, bagTagsStats } from "./data/mockData";
 
 const BagTags = () => {
@@ -16,7 +18,9 @@ const BagTags = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [hubFilter, setHubFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [selectedBag, setSelectedBag] = useState(bagTagsData[0]);
+
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const filteredBags = bagTagsData.filter((bag) => {
     const matchesSearch =
@@ -37,9 +41,19 @@ const BagTags = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection
+        onExport={() => setShowExportDialog(true)}
+        onPrint={() => console.log("Print Tags")}
+        onNewTag={() => setShowCreateModal(true)}
+      />
       <StatisticsSection stats={bagTagsStats} />
-      <QuickActions />
+      <QuickActions
+        onBulkPrint={() => console.log("Bulk Print")}
+        onScanBag={() => console.log("Scan Bag")}
+        onCreateMultiple={() => console.log("Create Multiple")}
+        onImportData={() => console.log("Import Data")}
+        onGenerateQR={() => console.log("Generate QR")}
+      />
       <FiltersSection
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -55,10 +69,34 @@ const BagTags = () => {
         setActiveTab={setActiveTab}
         data={bagTagsData}
       />
-      <MainContent
-        filteredBags={filteredBags}
-        selectedBag={selectedBag}
-        setSelectedBag={setSelectedBag}
+
+      <div className="space-y-6">
+        <ManifestTable
+          title="Bag Tags"
+          data={filteredBags.map(b => ({
+            ...b,
+            awb: b.bagNumber,
+            customer: b.destination.name,
+            phone: b.manifestNumber, // Using Manifest Number as duplicate info field
+            weight: b.weight.current,
+            location: b.origin.name,
+            type: b.type
+          }))}
+        />
+      </div>
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting bag tags as ${format}`);
+          setShowExportDialog(false);
+        }}
+      />
+
+      <CreateBagTagModal
+        showModal={showCreateModal}
+        setShowModal={setShowCreateModal}
       />
     </div>
   );

@@ -1,6 +1,5 @@
-import DRSList from "./DRSList";
-import DRSDetails from "./DRSDetails";
-import { DRSData } from "./types/drs"; // Common type import karein
+import { DRSTable } from "../shared/DRSTable";
+import { DRSData } from "./types/drs";
 
 interface PerformanceStats {
   averageEfficiency: number;
@@ -22,16 +21,8 @@ const DRSContent = ({
   performanceStats,
 }: DRSContentProps) => {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      <DRSList
-        filteredDRS={filteredDRS}
-        selectedDRS={selectedDRS}
-        setSelectedDRS={setSelectedDRS}
-      />
-      <DRSDetails
-        selectedDRS={selectedDRS}
-        performanceStats={performanceStats}
-      />
+    <div className="space-y-6">
+      <DRSTable data={filteredDRS} title="DRS History List" />
     </div>
   );
 };

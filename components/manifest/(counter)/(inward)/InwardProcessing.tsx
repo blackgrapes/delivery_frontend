@@ -6,10 +6,12 @@ import StatisticsCards from "./StatisticsCards";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import ShipmentsList from "./ShipmentsList";
-import ShipmentDetails from "./ShipmentDetails";
 import ProcessingModal from "./ProcessingModal";
 import { inwardShipmentsData, inwardStats } from "./data/mockData";
+import { ManifestTable } from "../../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
+
+import BulkUploadModal from "../(bulk)/BulkUploadModal";
 
 const InwardProcessing = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -22,6 +24,8 @@ const InwardProcessing = () => {
   );
   const [processingNotes, setProcessingNotes] = useState("");
   const [showProcessingModal, setShowProcessingModal] = useState(false);
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const filteredShipments = inwardShipmentsData.filter((shipment) => {
     const matchesSearch =
@@ -49,9 +53,17 @@ const InwardProcessing = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection
+        onExport={() => setShowExportDialog(true)}
+        onNewEntry={() => setShowProcessingModal(true)}
+      />
       <StatisticsCards stats={inwardStats} />
-      <QuickActions />
+      <QuickActions
+        onBulkUpload={() => setShowBulkUploadModal(true)}
+        onBatchScan={() => console.log("Batch Scan")}
+        onBulkWeigh={() => console.log("Bulk Weigh")}
+        onAutoAssign={() => console.log("Auto Assign")}
+      />
 
       <FiltersSection
         searchTerm={searchTerm}
@@ -70,18 +82,18 @@ const InwardProcessing = () => {
         shipmentsData={inwardShipmentsData}
       />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <ShipmentsList
-          shipments={filteredShipments}
-          selectedShipment={selectedShipment}
-          setSelectedShipment={setSelectedShipment}
-        />
-
-        <ShipmentDetails
-          selectedShipment={selectedShipment}
-          processingNotes={processingNotes}
-          setProcessingNotes={setProcessingNotes}
-          setShowProcessingModal={setShowProcessingModal}
+      <div className="space-y-6">
+        <ManifestTable
+          data={filteredShipments.map(s => ({
+            ...s,
+            awb: s.awbNumber,
+            customer: s.receiver.name,
+            phone: s.receiver.phone,
+            weight: s.package?.weight || 0,
+            location: s.origin.name,
+            type: s.priority
+          }))}
+          title="Inward Shipments"
         />
       </div>
 
@@ -92,6 +104,19 @@ const InwardProcessing = () => {
           setShowProcessingModal={setShowProcessingModal}
         />
       )}
+
+      {showBulkUploadModal && (
+        <BulkUploadModal onClose={() => setShowBulkUploadModal(false)} />
+      )}
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting as ${format}`);
+          setShowExportDialog(false);
+        }}
+      />
     </div>
   );
 };

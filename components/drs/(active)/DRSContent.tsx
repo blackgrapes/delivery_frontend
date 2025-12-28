@@ -1,5 +1,4 @@
-import DRSList from "./DRSList";
-import DRSDetails from "./DRSDetails";
+import { DRSTable } from "../shared/DRSTable";
 
 interface DRSContentProps {
   filteredDRS: any[];
@@ -13,13 +12,8 @@ const DRSContent = ({
   setSelectedDRS,
 }: DRSContentProps) => {
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      <DRSList
-        filteredDRS={filteredDRS}
-        selectedDRS={selectedDRS}
-        setSelectedDRS={setSelectedDRS}
-      />
-      <DRSDetails selectedDRS={selectedDRS} />
+    <div className="space-y-6">
+      <DRSTable data={filteredDRS} title="Active DRS List" />
     </div>
   );
 };

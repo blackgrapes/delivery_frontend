@@ -26,7 +26,7 @@ interface BulkUploadModalProps {
 const BulkUploadModal = ({ onClose }: BulkUploadModalProps) => {
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl rounded-2xl border-border/70 shadow-lg">
+      <Card className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border-border/70 shadow-lg">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">

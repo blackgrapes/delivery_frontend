@@ -7,8 +7,8 @@ import BulkManifestStats from "./BulkManifestStats";
 import BulkManifestTools from "./BulkManifestTools";
 import BulkManifestFilters from "./BulkManifestFilters";
 import BulkManifestTabs from "./BulkManifestTabs";
-import BulkManifestContent from "./BulkManifestContent";
 import BulkUploadModal from "./BulkUploadModal";
+import { ManifestTable } from "../../shared/ManifestTable";
 
 // Mock data for bulk manifest
 const bulkManifestData = [
@@ -150,9 +150,15 @@ const BulkManifestPage = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <BulkManifestHeader />
+      <BulkManifestHeader
+        onDownloadTemplate={() => console.log("Download Template")}
+        onNewUpload={() => setShowUploadModal(true)}
+      />
       <BulkManifestStats stats={bulkStats} />
-      <BulkManifestTools onUpload={() => setShowUploadModal(true)} />
+      <BulkManifestTools
+        onUpload={() => setShowUploadModal(true)}
+        onDownloadTemplate={() => console.log("Download Tools Template")}
+      />
       <BulkManifestFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -168,7 +174,19 @@ const BulkManifestPage = () => {
         onTabChange={setActiveTab}
         getStatusCount={getStatusCount}
       />
-      <BulkManifestContent manifests={filteredManifests} />
+      <div className="space-y-6">
+        <ManifestTable
+          title="Bulk Manifests"
+          data={filteredManifests.map(m => ({
+            ...m,
+            awb: m.manifestNumber,
+            customer: m.createdBy,
+            count: m.totalShipments,
+            location: m.hub,
+            type: m.type
+          }))}
+        />
+      </div>
 
       {showUploadModal && (
         <BulkUploadModal onClose={() => setShowUploadModal(false)} />

@@ -1,14 +1,5 @@
-// app/dashboard/manifest/dispatch/components/StatisticsSection.tsx
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Truck,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Package,
-  MapPin,
-} from "lucide-react";
+import { Truck, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
 
 interface StatsProps {
   stats: {
@@ -22,109 +13,81 @@ interface StatsProps {
 }
 
 const StatisticsSection = ({ stats }: StatsProps) => {
+  const statItems = [
+    {
+      title: "Total Dispatches",
+      value: stats.totalDispatches,
+      icon: Truck,
+      change: "+5.4%",
+      trend: "up",
+      description: "total created",
+    },
+    {
+      title: "Active Dispatches",
+      value: stats.inTransit + stats.pendingDispatch,
+      icon: Clock,
+      change: "+8",
+      trend: "up",
+      description: "in progress",
+    },
+    {
+      title: "Delivered Today",
+      value: stats.deliveredToday,
+      icon: CheckCircle2,
+      change: `${stats.onTimeRate}%`,
+      trend: "up",
+      description: "on time rate",
+    },
+    {
+      title: "Delayed / Issues",
+      value: stats.delayed,
+      icon: AlertTriangle,
+      change: "-2",
+      trend: "down",
+      description: "needs attention",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-red-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Dispatches
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.totalDispatches}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Active
-                </Badge>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {statItems.map((stat, index) => (
+        <Card
+          key={index}
+          className="relative overflow-hidden rounded-2xl border-border/70 bg-card/95 shadow-card transition-all hover:shadow-lg"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Today's dispatches
-              </p>
-            </div>
-            <div className="rounded-2xl bg-red-100 p-3">
-              <Truck className="h-6 w-6 text-red-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                In Transit
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.inTransit}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Moving
-                </Badge>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <stat.icon className="h-5 w-5" />
               </div>
-              <p className="text-xs text-muted-foreground">Currently on road</p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <MapPin className="h-6 w-6 text-orange-600" />
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${stat.trend === "up"
+                    ? "bg-success/15 text-success"
+                    : stat.trend === "down"
+                      ? "bg-error/15 text-error"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+              >
+                {stat.change}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {stat.description}
+              </span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Delivered Today
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.deliveredToday}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  {stats.onTimeRate}%
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                On-time delivery rate
-              </p>
-            </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-yellow-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Delayed
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.delayed}
-                </span>
-                <Badge variant="error" className="rounded-full text-xs">
-                  Issues
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Requiring attention
-              </p>
-            </div>
-            <div className="rounded-2xl bg-yellow-100 p-3">
-              <AlertCircle className="h-6 w-6 text-yellow-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-primary/5 blur-2xl" />
+        </Card>
+      ))}
     </div>
   );
 };

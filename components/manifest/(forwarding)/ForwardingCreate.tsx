@@ -7,7 +7,10 @@ import StatisticsSection from "./StatisticsSection";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import MainContent from "./MainContent";
+import { ManifestTable } from "../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
+import BulkUploadModal from "../(counter)/(bulk)/BulkUploadModal";
+import CreateManifestModal from "./CreateManifestModal";
 import { forwardingData, forwardingStats } from "./data/mockData";
 
 const ForwardingCreate = () => {
@@ -16,7 +19,10 @@ const ForwardingCreate = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [hubFilter, setHubFilter] = useState("all");
-  const [selectedShipment, setSelectedShipment] = useState(forwardingData[0]);
+
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const filteredShipments = forwardingData.filter((shipment) => {
     const matchesSearch =
@@ -47,9 +53,17 @@ const ForwardingCreate = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection
+        onExport={() => setShowExportDialog(true)}
+        onNewManifest={() => setShowCreateModal(true)}
+      />
       <StatisticsSection stats={forwardingStats} />
-      <QuickActions />
+      <QuickActions
+        onBulkUpload={() => setShowBulkUploadModal(true)}
+        onVehicleAssign={() => console.log("Vehicle Assign")}
+        onBatchSelect={() => console.log("Batch Select")}
+        onAutoGenerate={() => console.log("Auto Generate")}
+      />
       <FiltersSection
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -65,10 +79,38 @@ const ForwardingCreate = () => {
         setActiveTab={setActiveTab}
         data={forwardingData}
       />
-      <MainContent
-        filteredShipments={filteredShipments}
-        selectedShipment={selectedShipment}
-        setSelectedShipment={setSelectedShipment}
+
+      <div className="space-y-6">
+        <ManifestTable
+          title="Forwarding Shipments"
+          data={filteredShipments.map(s => ({
+            ...s,
+            awb: s.awbNumber,
+            customer: s.consignee.name,
+            phone: s.consignee.phone,
+            weight: parseFloat(s.package.weight.replace(' kg', '')), // Parsing weight string
+            location: s.destination.name,
+            type: s.priority
+          }))}
+        />
+      </div>
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting forwarding manifest as ${format}`);
+          setShowExportDialog(false);
+        }}
+      />
+
+      {showBulkUploadModal && (
+        <BulkUploadModal onClose={() => setShowBulkUploadModal(false)} />
+      )}
+
+      <CreateManifestModal
+        showModal={showCreateModal}
+        setShowModal={setShowCreateModal}
       />
     </div>
   );

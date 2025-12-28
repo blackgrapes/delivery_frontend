@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 interface HeaderSectionProps {
   viewMode: string;
   setViewMode: (mode: string) => void;
+  onExport?: () => void;
 }
 
-const HeaderSection = ({ viewMode, setViewMode }: HeaderSectionProps) => {
+const HeaderSection = ({ viewMode, setViewMode, onExport }: HeaderSectionProps) => {
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div className="space-y-2">
@@ -41,7 +42,7 @@ const HeaderSection = ({ viewMode, setViewMode }: HeaderSectionProps) => {
             Summary
           </Button>
         </div>
-        <Button variant="outline" className="gap-2 rounded-xl border-border/70">
+        <Button variant="outline" className="gap-2 rounded-xl border-border/70" onClick={onExport}>
           <Download className="h-4 w-4" />
           Export
         </Button>

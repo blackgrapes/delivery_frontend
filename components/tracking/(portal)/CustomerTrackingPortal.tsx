@@ -6,9 +6,9 @@ import StatisticsCards from "./StatisticsCards";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import TrackingList from "./TrackingList";
-import TrackingDetails from "./TrackingDetails";
 import { customerTrackingData, trackingStats } from "./data/mockData";
+import { DRSTable } from "@/components/drs/shared/DRSTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
 
 const CustomerTrackingPortal = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -18,6 +18,7 @@ const CustomerTrackingPortal = () => {
   const [selectedTracking, setSelectedTracking] = useState(
     customerTrackingData[0]
   );
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   const filteredTracking = customerTrackingData.filter((tracking) => {
     const matchesSearch =
@@ -37,7 +38,7 @@ const CustomerTrackingPortal = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection onExport={() => setIsExportOpen(true)} />
       <StatisticsCards stats={trackingStats} />
       <QuickActions />
       <FiltersSection
@@ -55,14 +56,11 @@ const CustomerTrackingPortal = () => {
       />
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <TrackingList
-          trackingData={filteredTracking}
-          selectedTracking={selectedTracking}
-          setSelectedTracking={setSelectedTracking}
-        />
-        <TrackingDetails tracking={selectedTracking} />
+      <div className="space-y-6">
+        <DRSTable data={filteredTracking} title="Tracking History" />
       </div>
+
+      <ExportDialog open={isExportOpen} onOpenChange={setIsExportOpen} />
     </div>
   );
 };

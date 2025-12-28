@@ -35,11 +35,11 @@ import WeightStats from "./WeightStats";
 import WeightTools from "./WeightTools";
 import WeightFilters from "./WeightFilters";
 import WeightTabs from "./WeightTabs";
-import WeightList from "./WeightList";
-import WeightDetails from "./WeightDetails";
 import WeightUpdateModal from "./WeightUpdateModal";
 import { weightUpdatesData } from "./data";
 import { Button } from "@/components/ui/button";
+import { ManifestTable } from "../../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
 
 const WeightUpdates = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -49,6 +49,7 @@ const WeightUpdates = () => {
   const [hubFilter, setHubFilter] = useState("all");
   const [selectedWeight, setSelectedWeight] = useState(weightUpdatesData[0]);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const filteredWeights = weightUpdatesData.filter((weight) => {
     const matchesSearch =
@@ -97,11 +98,15 @@ const WeightUpdates = () => {
           <Button
             variant="outline"
             className="gap-2 rounded-xl border-border/70"
+            onClick={() => setShowExportDialog(true)}
           >
             <Download className="h-4 w-4" />
             Export Report
           </Button>
-          <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand">
+          <Button
+            className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand"
+            onClick={() => setShowUpdateModal(true)}
+          >
             <Plus className="h-4 w-4" />
             New Weight Entry
           </Button>
@@ -109,7 +114,12 @@ const WeightUpdates = () => {
       </div>
 
       <WeightStats />
-      <WeightTools />
+      <WeightTools
+        onBulkWeigh={() => console.log("Bulk Weighing")}
+        onCalculator={() => console.log("Charge Calculator")}
+        onVolumetricCalc={() => console.log("Volumetric Calc")}
+        onAutoVerify={() => console.log("Auto Verify")}
+      />
       <WeightFilters
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -123,15 +133,18 @@ const WeightUpdates = () => {
       <WeightTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <WeightList
-          weights={filteredWeights}
-          selectedWeight={selectedWeight}
-          setSelectedWeight={setSelectedWeight}
-        />
-        <WeightDetails
-          weight={selectedWeight}
-          onUpdateWeight={() => setShowUpdateModal(true)}
+      <div className="space-y-6">
+        <ManifestTable
+          title="Weight Updates"
+          data={filteredWeights.map(w => ({
+            ...w,
+            awb: w.awbNumber,
+            customer: w.shipment.type, // Mapping Type as Customer is missing
+            phone: "N/A", // Phone missing
+            weight: w.weights.actual || w.weights.declared,
+            location: w.processing.hub,
+            type: w.priority
+          }))}
         />
       </div>
 
@@ -142,6 +155,15 @@ const WeightUpdates = () => {
           onClose={() => setShowUpdateModal(false)}
         />
       )}
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting weight report as ${format}`);
+          setShowExportDialog(false);
+        }}
+      />
     </div>
   );
 };

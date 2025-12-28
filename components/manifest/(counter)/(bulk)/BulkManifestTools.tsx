@@ -5,9 +5,10 @@ import { Upload, Download, RefreshCw, Settings, FileText } from "lucide-react";
 
 interface BulkManifestToolsProps {
   onUpload: () => void;
+  onDownloadTemplate?: () => void;
 }
 
-const BulkManifestTools = ({ onUpload }: BulkManifestToolsProps) => {
+const BulkManifestTools = ({ onUpload, onDownloadTemplate }: BulkManifestToolsProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
       <CardContent className="p-6">
@@ -24,6 +25,7 @@ const BulkManifestTools = ({ onUpload }: BulkManifestToolsProps) => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onDownloadTemplate}
             >
               <Download className="h-4 w-4" />
               Download Template
@@ -31,6 +33,7 @@ const BulkManifestTools = ({ onUpload }: BulkManifestToolsProps) => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onUpload}
             >
               <Upload className="h-4 w-4" />
               Bulk Upload

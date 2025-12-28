@@ -10,7 +10,12 @@ import {
   FileText,
 } from "lucide-react";
 
-const QuickActions = () => {
+interface QuickActionsProps {
+  onExport?: () => void;
+  onGenerateReport?: () => void;
+}
+
+const QuickActions = ({ onExport, onGenerateReport }: QuickActionsProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
       <CardContent className="p-6">
@@ -25,6 +30,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onExport}
             >
               <Download className="h-4 w-4" />
               Export Data
@@ -32,6 +38,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onGenerateReport}
             >
               <BarChart3 className="h-4 w-4" />
               Generate Report

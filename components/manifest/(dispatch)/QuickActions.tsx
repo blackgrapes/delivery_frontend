@@ -3,7 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Truck, MapPin, Package, Clock, RefreshCw, Upload } from "lucide-react";
 
-const QuickActions = () => {
+interface QuickActionsProps {
+  onAssignVehicle?: () => void;
+  onPlanRoute?: () => void;
+  onLoadManifest?: () => void;
+  onSchedule?: () => void;
+  onBulkUpdate?: () => void;
+}
+
+const QuickActions = ({ onAssignVehicle, onPlanRoute, onLoadManifest, onSchedule, onBulkUpdate }: QuickActionsProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
       <CardContent className="p-6">
@@ -20,6 +28,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onAssignVehicle}
             >
               <Truck className="h-4 w-4" />
               Assign Vehicle
@@ -27,6 +36,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onPlanRoute}
             >
               <MapPin className="h-4 w-4" />
               Plan Route
@@ -34,6 +44,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onLoadManifest}
             >
               <Package className="h-4 w-4" />
               Load Manifest
@@ -41,6 +52,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onSchedule}
             >
               <Clock className="h-4 w-4" />
               Schedule Dispatch
@@ -48,6 +60,7 @@ const QuickActions = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onBulkUpdate}
             >
               <Upload className="h-4 w-4" />
               Bulk Update

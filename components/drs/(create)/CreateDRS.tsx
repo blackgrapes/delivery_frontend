@@ -11,6 +11,7 @@ import {
   availableShipments,
   drsTemplates,
 } from "./data/mockData";
+import { QuickDRSDialog } from "../shared/ActionDialogs";
 
 const CreateDRS = () => {
   const [selectedRider, setSelectedRider] = useState(availableRiders[0]);
@@ -28,6 +29,7 @@ const CreateDRS = () => {
   const [notes, setNotes] = useState("");
   const [useOptimizedRoute, setUseOptimizedRoute] = useState(true);
   const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [isQuickDRSOpen, setIsQuickDRSOpen] = useState(false);
 
   // Calculate DRS statistics
   const drsStats = {
@@ -37,8 +39,8 @@ const CreateDRS = () => {
         shipment.package.codAmount === "-"
           ? 0
           : parseInt(
-              shipment.package.codAmount.replace("₹", "").replace(",", "")
-            );
+            shipment.package.codAmount.replace("₹", "").replace(",", "")
+          );
       return sum + cod;
     }, 0),
     totalWeight: selectedShipments.reduce((sum, shipment) => {
@@ -95,7 +97,7 @@ const CreateDRS = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <DRSHeader />
+      <DRSHeader onQuickCreate={() => setIsQuickDRSOpen(true)} />
       <DRSStats stats={drsStats} />
       <QuickActions
         selectedTemplate={selectedTemplate}
@@ -134,6 +136,7 @@ const CreateDRS = () => {
           />
         </div>
       </div>
+      <QuickDRSDialog open={isQuickDRSOpen} onOpenChange={setIsQuickDRSOpen} />
     </div>
   );
 };

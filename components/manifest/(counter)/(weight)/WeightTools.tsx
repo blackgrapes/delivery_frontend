@@ -2,7 +2,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Calculator, Ruler, RefreshCw } from "lucide-react";
 
-const WeightTools = () => {
+interface WeightToolsProps {
+  onBulkWeigh?: () => void;
+  onCalculator?: () => void;
+  onVolumetricCalc?: () => void;
+  onAutoVerify?: () => void;
+}
+
+const WeightTools = ({ onBulkWeigh, onCalculator, onVolumetricCalc, onAutoVerify }: WeightToolsProps) => {
   return (
     <Card className="rounded-2xl border-border/70 bg-card/95 shadow-card">
       <CardContent className="p-6">
@@ -17,6 +24,7 @@ const WeightTools = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onBulkWeigh}
             >
               <Upload className="h-4 w-4" />
               Bulk Weighing
@@ -24,6 +32,7 @@ const WeightTools = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onCalculator}
             >
               <Calculator className="h-4 w-4" />
               Charge Calculator
@@ -31,6 +40,7 @@ const WeightTools = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onVolumetricCalc}
             >
               <Ruler className="h-4 w-4" />
               Volumetric Calc
@@ -38,6 +48,7 @@ const WeightTools = () => {
             <Button
               variant="outline"
               className="gap-2 rounded-xl border-border/70"
+              onClick={onAutoVerify}
             >
               <RefreshCw className="h-4 w-4" />
               Auto Verify

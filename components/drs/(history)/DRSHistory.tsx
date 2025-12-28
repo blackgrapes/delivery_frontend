@@ -8,6 +8,7 @@ import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
 import DRSContent from "./DRSContent";
 import { drsHistoryData, performanceStats } from "./data";
+import { ExportDialog } from "../shared/ActionDialogs";
 
 const DRSHistory = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -17,6 +18,7 @@ const DRSHistory = () => {
   const [dateFilter, setDateFilter] = useState("all");
   const [selectedDRS, setSelectedDRS] = useState(drsHistoryData[0]);
   const [viewMode, setViewMode] = useState("detailed");
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   const filteredDRS = drsHistoryData.filter((drs) => {
     const matchesSearch =
@@ -60,7 +62,11 @@ const DRSHistory = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection viewMode={viewMode} setViewMode={setViewMode} />
+      <HeaderSection
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        onExport={() => setIsExportOpen(true)}
+      />
       <PerformanceOverview performanceStats={performanceStats} />
       <AnalyticsSummary performanceStats={performanceStats} />
 
@@ -88,6 +94,8 @@ const DRSHistory = () => {
         setSelectedDRS={setSelectedDRS}
         performanceStats={performanceStats}
       />
+
+      <ExportDialog open={isExportOpen} onOpenChange={setIsExportOpen} />
     </div>
   );
 };

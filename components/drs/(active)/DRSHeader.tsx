@@ -1,13 +1,15 @@
-import { Truck, Download, RefreshCw } from "lucide-react";
+import { Truck, Download, RefreshCw, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 
 interface DRSHeaderProps {
   autoRefresh: boolean;
   setAutoRefresh: (value: boolean) => void;
+  onImport?: () => void;
+  onExport?: () => void;
 }
 
-const DRSHeader = ({ autoRefresh, setAutoRefresh }: DRSHeaderProps) => {
+const DRSHeader = ({ autoRefresh, setAutoRefresh, onImport, onExport }: DRSHeaderProps) => {
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div className="space-y-2">
@@ -28,7 +30,11 @@ const DRSHeader = ({ autoRefresh, setAutoRefresh }: DRSHeaderProps) => {
           <Switch checked={autoRefresh} onCheckedChange={setAutoRefresh} />
           <span className="text-sm text-muted-foreground">Auto Refresh</span>
         </div>
-        <Button variant="outline" className="gap-2 rounded-xl border-border/70">
+        <Button variant="outline" className="gap-2 rounded-xl border-border/70" onClick={onImport}>
+          <Upload className="h-4 w-4" />
+          Import
+        </Button>
+        <Button variant="outline" className="gap-2 rounded-xl border-border/70" onClick={onExport}>
           <Download className="h-4 w-4" />
           Export Report
         </Button>

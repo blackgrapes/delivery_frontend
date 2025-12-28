@@ -7,7 +7,9 @@ import StatisticsSection from "./StatisticsSection";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import MainContent from "./MainContent";
+import { ManifestTable } from "../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
+import CreateDispatchModal from "./CreateDispatchModal";
 import { dispatchData, dispatchStats } from "./data/mockData";
 
 const Dispatch = () => {
@@ -16,7 +18,9 @@ const Dispatch = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [hubFilter, setHubFilter] = useState("all");
   const [vehicleFilter, setVehicleFilter] = useState("all");
-  const [selectedDispatch, setSelectedDispatch] = useState(dispatchData[0]);
+
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const filteredDispatches = dispatchData.filter((dispatch) => {
     const matchesSearch =
@@ -45,9 +49,19 @@ const Dispatch = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection
+        onExport={() => setShowExportDialog(true)}
+        onRoutePlan={() => console.log("Route Planner")}
+        onNewDispatch={() => setShowCreateModal(true)}
+      />
       <StatisticsSection stats={dispatchStats} />
-      <QuickActions />
+      <QuickActions
+        onAssignVehicle={() => console.log("Assign Vehicle")}
+        onPlanRoute={() => console.log("Plan Route")}
+        onLoadManifest={() => console.log("Load Manifest")}
+        onSchedule={() => console.log("Schedule Dispatch")}
+        onBulkUpdate={() => console.log("Bulk Update")}
+      />
       <FiltersSection
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -63,10 +77,34 @@ const Dispatch = () => {
         setActiveTab={setActiveTab}
         data={dispatchData}
       />
-      <MainContent
-        filteredDispatches={filteredDispatches}
-        selectedDispatch={selectedDispatch}
-        setSelectedDispatch={setSelectedDispatch}
+
+      <div className="space-y-6">
+        <ManifestTable
+          title="Active Dispatches"
+          data={filteredDispatches.map(d => ({
+            ...d,
+            awb: d.manifestNumber,
+            customer: d.driver.name,
+            phone: d.driver.phone,
+            weight: parseFloat(d.totalWeight.replace(',', '').replace(' kg', '')), // Parsing weight
+            location: d.destination.name,
+            type: d.vehicle.type
+          }))}
+        />
+      </div>
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting dispatch report as ${format}`);
+          setShowExportDialog(false);
+        }}
+      />
+
+      <CreateDispatchModal
+        showModal={showCreateModal}
+        setShowModal={setShowCreateModal}
       />
     </div>
   );

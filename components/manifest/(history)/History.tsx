@@ -7,7 +7,8 @@ import StatisticsSection from "./StatisticsSection";
 import QuickActions from "./QuickActions";
 import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
-import MainContent from "./MainContent";
+import { ManifestTable } from "../shared/ManifestTable";
+import { ExportDialog } from "@/components/drs/shared/ActionDialogs";
 import { historyData, historyStats } from "./data/mockData";
 
 const History = () => {
@@ -16,7 +17,8 @@ const History = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [hubFilter, setHubFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState("all");
-  const [selectedHistory, setSelectedHistory] = useState(historyData[0]);
+
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   const filteredHistory = historyData.filter((history) => {
     const matchesSearch =
@@ -39,9 +41,15 @@ const History = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <HeaderSection />
+      <HeaderSection
+        onExport={() => setShowExportDialog(true)}
+        onRefresh={() => console.log("Refresh Data")}
+      />
       <StatisticsSection stats={historyStats} />
-      <QuickActions />
+      <QuickActions
+        onExport={() => setShowExportDialog(true)}
+        onGenerateReport={() => console.log("Generate Report")}
+      />
       <FiltersSection
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -57,10 +65,29 @@ const History = () => {
         setActiveTab={setActiveTab}
         data={historyData}
       />
-      <MainContent
-        filteredHistory={filteredHistory}
-        selectedHistory={selectedHistory}
-        setSelectedHistory={setSelectedHistory}
+
+      <div className="space-y-6">
+        <ManifestTable
+          title="Manifest History"
+          data={filteredHistory.map(h => ({
+            ...h,
+            awb: h.manifestNumber,
+            customer: h.destination.name,
+            phone: h.driver.phone,
+            weight: parseFloat(h.totalWeight.replace(',', '').replace(' kg', '')), // Parsing weight
+            location: h.origin.name,
+            type: h.vehicle.type
+          }))}
+        />
+      </div>
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        onExport={(format) => {
+          console.log(`Exporting history report as ${format}`);
+          setShowExportDialog(false);
+        }}
       />
     </div>
   );

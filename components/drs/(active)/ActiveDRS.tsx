@@ -8,6 +8,7 @@ import FiltersSection from "./FiltersSection";
 import StatusTabs from "./StatusTabs";
 import DRSContent from "./DRSContent";
 import { activeDRSData, drsStats } from "./data/mockData";
+import { ImportDialog, ExportDialog } from "../shared/ActionDialogs";
 
 const ActiveDRS = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -16,6 +17,8 @@ const ActiveDRS = () => {
   const [riderFilter, setRiderFilter] = useState("all");
   const [selectedDRS, setSelectedDRS] = useState(activeDRSData[0]);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
 
   const filteredDRS = activeDRSData.filter((drs) => {
     const matchesSearch =
@@ -32,7 +35,12 @@ const ActiveDRS = () => {
 
   return (
     <div className="space-y-6 p-6">
-      <DRSHeader autoRefresh={autoRefresh} setAutoRefresh={setAutoRefresh} />
+      <DRSHeader
+        autoRefresh={autoRefresh}
+        setAutoRefresh={setAutoRefresh}
+        onImport={() => setIsImportOpen(true)}
+        onExport={() => setIsExportOpen(true)}
+      />
 
       <DRSStats stats={drsStats} />
 
@@ -58,6 +66,9 @@ const ActiveDRS = () => {
         selectedDRS={selectedDRS}
         setSelectedDRS={setSelectedDRS}
       />
+
+      <ImportDialog open={isImportOpen} onOpenChange={setIsImportOpen} />
+      <ExportDialog open={isExportOpen} onOpenChange={setIsExportOpen} />
     </div>
   );
 };

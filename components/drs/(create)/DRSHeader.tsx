@@ -1,7 +1,13 @@
 import { Truck, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const DRSHeader = () => {
+interface DRSHeaderProps {
+  onQuickCreate?: () => void;
+  autoRefresh?: boolean;
+  setAutoRefresh?: (value: boolean) => void;
+}
+
+const DRSHeader = ({ onQuickCreate, autoRefresh, setAutoRefresh }: DRSHeaderProps) => {
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
       <div className="space-y-2">
@@ -22,7 +28,10 @@ const DRSHeader = () => {
           <Download className="h-4 w-4" />
           Export Template
         </Button>
-        <Button className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand">
+        <Button
+          className="gap-2 rounded-xl bg-primary text-primary-foreground shadow-brand"
+          onClick={onQuickCreate}
+        >
           <Plus className="h-4 w-4" />
           Quick DRS
         </Button>
@@ -30,5 +39,6 @@ const DRSHeader = () => {
     </div>
   );
 };
+
 
 export default DRSHeader;

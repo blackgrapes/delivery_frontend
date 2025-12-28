@@ -1,7 +1,5 @@
-// app/dashboard/manifest/bag-tags/components/StatisticsSection.tsx
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Package, Tag, CheckCircle2, AlertCircle, Truck } from "lucide-react";
+import { Package, Truck, CheckCircle2, AlertCircle } from "lucide-react";
 
 interface StatsProps {
   stats: {
@@ -15,103 +13,81 @@ interface StatsProps {
 }
 
 const StatisticsSection = ({ stats }: StatsProps) => {
+  const statItems = [
+    {
+      title: "Total Bags",
+      value: stats.totalBags,
+      icon: Package,
+      change: "+8.2%",
+      trend: "up",
+      description: "total created",
+    },
+    {
+      title: "Active Bags",
+      value: stats.activeBags,
+      icon: Truck,
+      change: "+12",
+      trend: "up",
+      description: "currently active",
+    },
+    {
+      title: "Sealed Today",
+      value: stats.sealedToday,
+      icon: CheckCircle2,
+      change: "+5",
+      trend: "up",
+      description: "ready for dispatch",
+    },
+    {
+      title: "Pending Sealing",
+      value: stats.pendingSealing,
+      icon: AlertCircle,
+      change: "-2",
+      trend: "down",
+      description: "needs attention",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Bags
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.totalBags}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Active
-                </Badge>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {statItems.map((stat, index) => (
+        <Card
+          key={index}
+          className="relative overflow-hidden rounded-2xl border-border/70 bg-card/95 shadow-card transition-all hover:shadow-lg"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">Bags in system</p>
-            </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <Package className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Sealed Today
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.sealedToday}
-                </span>
-                <Badge variant="info" className="rounded-full text-xs">
-                  New
-                </Badge>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <stat.icon className="h-5 w-5" />
               </div>
-              <p className="text-xs text-muted-foreground">Bags sealed today</p>
             </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Tag className="h-6 w-6 text-blue-600" />
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${stat.trend === "up"
+                    ? "bg-success/15 text-success"
+                    : stat.trend === "down"
+                      ? "bg-error/15 text-error"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+              >
+                {stat.change}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {stat.description}
+              </span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                In Transit
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.inTransit}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Moving
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">Bags in transit</p>
-            </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <Truck className="h-6 w-6 text-orange-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Pending Sealing
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.pendingSealing}
-                </span>
-                <Badge variant="error" className="rounded-full text-xs">
-                  Action
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">Need sealing</p>
-            </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <AlertCircle className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-primary/5 blur-2xl" />
+        </Card>
+      ))}
     </div>
   );
 };

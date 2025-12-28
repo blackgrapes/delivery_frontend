@@ -1,13 +1,9 @@
-// components/manifest/counter/bulk/components/BulkManifestStats.tsx
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Package,
   Clock,
   CheckCircle2,
-  AlertCircle,
   BarChart3,
-  IndianRupee,
 } from "lucide-react";
 
 interface BulkStatsProps {
@@ -23,105 +19,81 @@ interface BulkStatsProps {
 }
 
 const BulkManifestStats = ({ stats }: BulkStatsProps) => {
+  const statItems = [
+    {
+      title: "Total Processed",
+      value: stats.totalProcessed,
+      icon: Package,
+      change: "Today",
+      trend: "up",
+      description: "Bulk batches",
+    },
+    {
+      title: "Pending Batches",
+      value: stats.pendingBatches,
+      icon: Clock,
+      change: "Awaiting",
+      trend: "down",
+      description: "Need processing",
+    },
+    {
+      title: "Success Rate",
+      value: `${stats.successRate}%`,
+      icon: CheckCircle2,
+      change: "Quality",
+      trend: "up",
+      description: "Processing accuracy",
+    },
+    {
+      title: "Avg Processing Time",
+      value: stats.averageProcessingTime,
+      icon: BarChart3,
+      change: "Fast",
+      trend: "up",
+      description: "Per batch",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-blue-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Processed
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.totalProcessed}
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Today
-                </Badge>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {statItems.map((stat, index) => (
+        <Card
+          key={index}
+          className="relative overflow-hidden rounded-2xl border-border/70 bg-card/95 shadow-card transition-all hover:shadow-lg"
+        >
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
+                <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+                  {stat.value}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">Bulk batches</p>
-            </div>
-            <div className="rounded-2xl bg-blue-100 p-3">
-              <Package className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-orange-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Pending Batches
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.pendingBatches}
-                </span>
-                <Badge variant="warning" className="rounded-full text-xs">
-                  Awaiting
-                </Badge>
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <stat.icon className="h-5 w-5" />
               </div>
-              <p className="text-xs text-muted-foreground">Need processing</p>
             </div>
-            <div className="rounded-2xl bg-orange-100 p-3">
-              <Clock className="h-6 w-6 text-orange-600" />
+            <div className="mt-4 flex items-center gap-2">
+              <span
+                className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${stat.trend === "up"
+                    ? "bg-success/15 text-success"
+                    : stat.trend === "down"
+                      ? "bg-warning/15 text-warning"
+                      : "bg-muted text-muted-foreground"
+                  }`}
+              >
+                {stat.change}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {stat.description}
+              </span>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-green-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Success Rate
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.successRate}%
-                </span>
-                <Badge variant="success" className="rounded-full text-xs">
-                  Quality
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Processing accuracy
-              </p>
-            </div>
-            <div className="rounded-2xl bg-green-100 p-3">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="rounded-2xl border-border/70 bg-gradient-to-br from-card/95 to-purple-50/50 shadow-card">
-        <CardContent className="p-5">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">
-                Avg Processing Time
-              </p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-foreground">
-                  {stats.averageProcessingTime}
-                </span>
-                <Badge variant="info" className="rounded-full text-xs">
-                  Fast
-                </Badge>
-              </div>
-              <p className="text-xs text-muted-foreground">Per batch</p>
-            </div>
-            <div className="rounded-2xl bg-purple-100 p-3">
-              <BarChart3 className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <div className="absolute right-0 top-0 h-24 w-24 translate-x-8 translate-y--8 rounded-full bg-primary/5 blur-2xl" />
+        </Card>
+      ))}
     </div>
   );
 };
